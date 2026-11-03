@@ -1,0 +1,30 @@
+{
+ "name": "Akkord-Labor",
+ "short_name": "Akkord-Labor",
+ "description": "Songwriting-Labor: Akkorde, Bass, Drums und Melodie – für Klavier und Gitarre.",
+ "start_url": "./",
+ "scope": "./",
+ "display": "standalone",
+ "orientation": "any",
+ "background_color": "#0c0e12",
+ "theme_color": "#0c0e12",
+ "lang": "de",
+ "icons": [
+  {
+   "src": "icon-192.png",
+   "sizes": "192x192",
+   "type": "image/png"
+  },
+  {
+   "src": "icon-512.png",
+   "sizes": "512x512",
+   "type": "image/png"
+  },
+  {
+   "src": "icon-maskable-512.png",
+   "sizes": "512x512",
+   "type": "image/png",
+   "purpose": "maskable"
+  }
+ ]
+}
