@@ -285,6 +285,20 @@ svg.emo .en{cursor:pointer}
 .emopath{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin-top:8px}
 .ep-e{font-size:11px;color:var(--tx2);border-bottom:2px solid var(--c);padding:0 2px}
 
+.seg.labtabs{display:flex;width:100%;overflow-x:auto}
+.seg.labtabs button{flex:none;padding:6px 11px;font-size:12px}
+svg.ring{max-width:400px}
+.et.mid{font-size:13px}.et.tiny{font-size:7px;fill:#0b3a4a;font-weight:700}.et.lt{fill:#fff}
+.el.big{font-size:13px;fill:var(--tx);font-weight:700}
+.dot{display:inline-block;width:9px;height:9px;border-radius:50%;margin:0 3px 0 8px;vertical-align:middle}
+.blk{display:flex;flex-direction:column;gap:4px;font-size:12px;color:var(--tx2)}
+.target{display:flex;flex-direction:column;background:var(--s2);border-radius:12px;padding:10px 12px;margin-top:12px}
+.target b{font-size:18px}.target span{font-size:12px;color:var(--tx2)}
+.opt.sel{background:var(--s2);border-radius:12px;padding:10px;border-top:0;margin:4px 0}
+.arrow{color:var(--tx3);align-self:center}
+.modk{color:var(--tx)}
+.tip a{color:var(--hi)}
+
 </style>
 </head>
 <body>
@@ -963,6 +977,69 @@ function emoDegree(c, key) {
   return d >= 0 ? d : null;
 }
 const emoLabel = c => c.q === 'dim' ? pcName(c.r) + '°' : chordSym(c);
+
+/* ---- Modulation & chromatischer Akkord-Ring ---- */
+const tonicChord = key => diatonicChord(key, 0, 3);
+const domOf = key => ({ r: mod12(key.root + 7), q:'7', b:null });
+function semis(from, to) { let d = mod12((to.root - MODE_OFF[to.mode]) - (from.root - MODE_OFF[from.mode])); if (d > 6) d -= 12; return d; }
+function keyRelation(from, to) {
+  const d = mod12(to.root - from.root), sameFam = MODES[from.mode].minor === MODES[to.mode].minor;
+  if (d === 0 && !sameFam) return 'Variante (gleicher Grundton, anderes Tongeschlecht)';
+  if (!sameFam && ((MODES[from.mode].minor && d === 3) || (!MODES[from.mode].minor && d === 9))) return 'Paralleltonart – gleiche Töne';
+  if (!sameFam) return 'anderes Tongeschlecht';
+  return { 1:'½ Ton höher', 2:'1 Ton höher', 11:'½ Ton tiefer', 10:'1 Ton tiefer', 7:'Quinte höher (Dominante)', 5:'Quarte höher (Subdominante)', 3:'kleine Terz höher', 4:'große Terz höher', 8:'große Terz tiefer', 9:'kleine Terz tiefer', 6:'Tritonus – maximal weit weg', 0:'gleiche Tonart' }[d];
+}
+function commonChords(from, to) {
+  const ts = scalePcs(to.root, to.mode), out = [];
+  for (let d = 0; d < 7; d++) { const c = diatonicChord(from, d, 3); if (c.q !== 'dim' && subset(chordPcs(c), ts)) out.push(c); }
+  return out;
+}
+function modulationOptions(from, to) {
+  const opts = [], minorTo = MODES[to.mode].minor, T = tonicChord(to), V7 = domOf(to);
+  const ii = minorTo ? { r: mod12(to.root + 2), q:'m7b5', b:null } : { r: mod12(to.root + 2), q:'m7', b:null };
+  const rel = keyRelation(from, to);
+  opts.push({ id:'direct', name:'Direkt – ohne Überleitung', chords:[],
+    desc:`Der Teil startet einfach in ${keyName(to)}. Bei ½ oder 1 Ton höher ist das der Klassiker für den letzten Chorus („Truck-Driver-Modulation“): plötzlich mehr Energie.` });
+  opts.push({ id:'dom', name:'Dominante der neuen Tonart', chords:[Object.assign({}, V7, { beats:4 })],
+    desc:`${chordSym(V7)} zieht als V7 sofort nach ${chordSym(T)} – das Ohr akzeptiert die neue Tonika, bevor sie da ist.` });
+  opts.push({ id:'iiv', name:'ii – V – I', chords:[Object.assign({}, ii, { beats:2 }), Object.assign({}, V7, { beats:2 })],
+    desc:`${chordSym(ii)} → ${chordSym(V7)} → ${chordSym(T)}: die stärkste Kadenz der Musik, sauber und elegant. Funktioniert für jede Zieltonart.` });
+  opts.push({ id:'sus', name:'Vorhalt (sus4 → 7)', chords:[{ r:V7.r, q:'sus4', b:null, beats:2 }, Object.assign({}, V7, { beats:2 })],
+    desc:`${pcName(V7.r)}sus4 schwebt, ${chordSym(V7)} schiebt nach – Spannung mit Ansage. Typisch vor einem großen Refrain.` });
+  const com = commonChords(from, to).filter(c => chordKey(c) !== chordKey(T));
+  if (com.length) {
+    const score = c => { const d = degreeOf(c.r, to); return d.acc ? 0 : ({ 1:3, 3:3, 5:2, 2:1 })[d.deg] || 0; };
+    const pv = com.slice().sort((a, b) => score(b) - score(a))[0];
+    opts.push({ id:'pivot', name:'Gemeinsamer Akkord (Pivot)', chords:[Object.assign({}, pv, { beats:4 }), Object.assign({}, V7, { beats:4 })],
+      desc:`${chordSym(pv)} gibt es in beiden Tonarten (${numeral(pv, from)} in ${keyName(from)}, ${numeral(pv, to)} in ${keyName(to)}). Er ist die Tür: Das Ohr merkt den Wechsel erst danach – die weichste Modulation.` });
+  }
+  opts.push({ id:'epic', name: minorTo ? 'Aufstieg VI – VII' : 'Aufstieg ♭VI – ♭VII', chords:[{ r:mod12(to.root + 8), q:'', b:null, beats:2 }, { r:mod12(to.root + 10), q:'', b:null, beats:2 }],
+    desc:`${pcName(to.root + 8)} → ${pcName(to.root + 10)} → ${chordSym(T)}: zwei Dur-Akkorde steigen in die neue Tonika – episch, filmisch, Rock-Hymne.` });
+  return { rel, opts };
+}
+/** Chromatischer Ring wie im Video: 7 leitereigene Akkorde + Farbakkorde auf den 5 übrigen Halbtönen + Dur/Moll-Varianten */
+function chromaRing(key) {
+  const sc = MODES[key.mode].iv, out = [];
+  for (let s = 0; s < 12; s++) {
+    const r = mod12(key.root + s), d = sc.indexOf(s);
+    if (d >= 0) {
+      const c = diatonicChord(key, d, 3);
+      out.push({ s, c, kind:'dia' });
+      const flip = c.q === '' ? { r, q:'m', b:null } : c.q === 'm' ? { r, q:'', b:null } : c.q === 'dim' ? { r, q:'m', b:null } : null;
+      if (flip) out.push({ s, c:flip, kind: c.q === '' ? 'in' : 'out' });
+    } else out.push({ s, c:{ r, q:'', b:null }, kind:'chrom' });
+  }
+  return out;
+}
+function ringInfo(c, key) {
+  const sc = scalePcs(key.root, key.mode);
+  if (subset(chordPcs(c), sc)) return `Leitereigen: ${numeral(c, key)} – ${harmonicFunction(c, key).label}.`;
+  const src = findSourceMode(c, key), parts = [];
+  if (src) parts.push(`geliehen aus ${pcName(key.root)} ${MODES[src].name} – ${BORROW_STORY[src]}`);
+  if (c.q === '' && sc.includes(mod12(c.r + 5)) && mod12(c.r + 5) !== c.r) parts.push(`kann als Zwischendominante zu ${pcName(c.r + 5)} wirken`);
+  if (!parts.length) parts.push('chromatischer Farbakkord – gutes Sprungbrett in eine neue Tonart');
+  return `${numeral(c, key)}: ${parts.join('; ')}.`;
+}
 
 /* ===== Gitarre: Stimmungen, Griff-Generator, Tabs ===== */
 const TUNINGS = {
@@ -1675,7 +1752,7 @@ function buildEvents(proj, scope) {
       chordEvents(ev, c, v, cb, d, sec.chordStyle || 'hold', proj.sound || 'ep');
       cb += d;
     });
-    if (sec.chords.length) bassLine(sec, proj.key, nextFirst, sec.bassStyle || 'root').forEach(n => ev.push({ b:beat + n.b, d:n.d, k:'bass', m:n.m, v:n.v, tr:'bass' }));
+    if (sec.chords.length) bassLine(sec, sec.key || proj.key, nextFirst, sec.bassStyle || 'root').forEach(n => ev.push({ b:beat + n.b, d:n.d, k:'bass', m:n.m, v:n.v, tr:'bass' }));
     drumEvents(sec, len).forEach(d => ev.push({ b:beat + d.b, k:'drum', n:d.n, v:d.v, tr:'drums', h: sec.drums && sec.drums.humanize }));
     (sec.melodies || []).forEach((ml, li) => {
       if (ml.mute) return;
@@ -2009,7 +2086,7 @@ const S = {
     tab:'song', secId:null, ci:null, sheet:null, scope:'section', loop:true, expScope:'song',
     labTab:'finder', melLayer:0, melLen:2, melChrom:false, melHints:true, melOct:0, melShow:'guitar',
     vi:{}, scaleSel:0, finder:{ mode:'guitar', frets:[-1,-1,-1,-1,-1,-1], keys:[] }, fb:{ root:null, mode:null, overlay:true },
-    emo:{ sel:null, path:[] }, pickTab:'sugg', pickBeats:4, pickText:'', pickRoot:null,
+    emo:{ sel:null, path:[] }, mod:{ ai:null, root:null, mode:null, method:'iiv', copy:true, ring:null }, pickTab:'sugg', pickBeats:4, pickText:'', pickRoot:null,
   },
 };
 const P = () => S.proj;
@@ -2033,6 +2110,8 @@ function toneRole(pc, c) {
 const noteColor = (pc, c) => (ST().colorMode === 'fn' && c) ? FN_COL[toneRole(pc, c)] : pcColor(pc);
 const inClaude = () => typeof window.claude === 'object' && window.claude && typeof window.claude.use === 'function';
 const curSec = () => { const p = P(); return p.sections.find(s => s.id === S.ui.secId) || p.sections[0] || null; };
+const keyOf = sec => (sec && sec.key) || P().key;
+const CK = () => keyOf(curSec());
 const curChord = () => { const s = curSec(); return s && S.ui.ci != null ? s.chords[S.ui.ci] || null : null; };
 const secById = id => P().sections.find(s => s.id === id);
 const fmtTime = sec => Math.floor(sec / 60) + ':' + String(Math.round(sec % 60)).padStart(2, '0');
@@ -2227,12 +2306,12 @@ function vSong() {
 function secCard(s) {
   const p = P(), sel = curSec() && curSec().id === s.id, beats = secBeats(s);
   let h = `<div class="card sec ${sel ? 'sel' : ''}" id="sec-${s.id}">
-    <div class="row sp"><div class="row g8"><button class="ib pl" data-a="playSec" data-id="${s.id}" aria-label="Teil abspielen">${IC.play}</button><div data-a="pickSec" data-id="${s.id}"><div class="h">${esc(s.name)}</div><div class="sub">${SECTION_TYPES[s.type].name} · ${beats / 4} Takte</div></div></div><button class="ib" data-a="secMenu" data-id="${s.id}" aria-label="Teil-Menü">${IC.dots}</button></div>`;
+    <div class="row sp"><div class="row g8"><button class="ib pl" data-a="playSec" data-id="${s.id}" aria-label="Teil abspielen">${IC.play}</button><div data-a="pickSec" data-id="${s.id}"><div class="h">${esc(s.name)}</div><div class="sub">${SECTION_TYPES[s.type].name} · ${beats / 4} Takte${s.key ? ' · <b class="modk">' + esc(keyName(s.key)) + '</b>' : ''}</div></div></div><button class="ib" data-a="secMenu" data-id="${s.id}" aria-label="Teil-Menü">${IC.dots}</button></div>`;
   if (s.why) h += `<div class="why">${esc(s.why)}</div>`;
   h += `<div class="crow">`;
   s.chords.forEach((c, i) => {
     const on = sel && S.ui.ci === i;
-    h += `<button class="cchip ${on ? 'on' : ''}" style="grid-column:span ${Math.min(8, Math.max(1, c.beats))};--c:${pcColor(c.r)}" data-a="selChord" data-id="${s.id}" data-i="${i}" data-sec="${s.id}" data-ci="${i}"><b>${esc(chordSym(c))}</b><i>${esc(numeral(c, p.key))}</i></button>`;
+    h += `<button class="cchip ${on ? 'on' : ''}" style="grid-column:span ${Math.min(8, Math.max(1, c.beats))};--c:${pcColor(c.r)}" data-a="selChord" data-id="${s.id}" data-i="${i}" data-sec="${s.id}" data-ci="${i}"><b>${esc(chordSym(c))}</b><i>${esc(numeral(c, keyOf(s)))}</i></button>`;
   });
   h += `<button class="cchip add" style="grid-column:span 2" data-a="addChord" data-id="${s.id}" aria-label="Akkord hinzufügen">${IC.plus}</button></div>`;
   if (sel && S.ui.ci != null && s.chords[S.ui.ci]) h += chordEditPanel(s, S.ui.ci);
@@ -2240,7 +2319,7 @@ function secCard(s) {
   return h + '</div>';
 }
 function chordEditPanel(s, i) {
-  const c = s.chords[i], key = P().key;
+  const c = s.chords[i], key = CK();
   const lens = [[1,'1 Schlag'], [2,'½ Takt'], [4,'1 Takt'], [8,'2 Takte']];
   const bassOpts = [{ v:'', l:'Grundton' }].concat(QUALS[c.q].iv.slice(1).map(iv => ({ v: mod12(c.r + iv), l: pcName(c.r + iv) + ' (' + (TONE_ROLE[iv] || '') + ')' })));
   return `<div class="cedit">
@@ -2278,10 +2357,10 @@ function vChords() {
   if (!s || !s.chords.length) return h + `<div class="card"><div class="sub">Dieser Teil hat noch keine Akkorde.</div><button class="wide mt" data-a="addChord" data-id="${s ? s.id : ''}">${IC.plus} Akkord hinzufügen</button></div>` + keyAssistCard();
   if (S.ui.ci == null || !s.chords[S.ui.ci]) S.ui.ci = 0;
   const i = S.ui.ci, c = s.chords[i], prev = s.chords[i - 1] || null, next = s.chords[i + 1] || null;
-  h += `<div class="crow small">${s.chords.map((x, j) => `<button class="cchip ${j === i ? 'on' : ''}" style="grid-column:span ${Math.min(8, Math.max(1, x.beats))};--c:${pcColor(x.r)}" data-a="selChordC" data-i="${j}" data-sec="${s.id}" data-ci="${j}"><b>${esc(chordSym(x))}</b><i>${esc(numeral(x, p.key))}</i></button>`).join('')}</div>`;
-  const hf = harmonicFunction(c, p.key);
+  h += `<div class="crow small">${s.chords.map((x, j) => `<button class="cchip ${j === i ? 'on' : ''}" style="grid-column:span ${Math.min(8, Math.max(1, x.beats))};--c:${pcColor(x.r)}" data-a="selChordC" data-i="${j}" data-sec="${s.id}" data-ci="${j}"><b>${esc(chordSym(x))}</b><i>${esc(numeral(x, keyOf(s)))}</i></button>`).join('')}</div>`;
+  const hf = harmonicFunction(c, keyOf(s));
   h += `<div class="card big"><div class="row sp"><button class="ib" data-a="ciNav" data-d="-1" aria-label="Vorheriger Akkord">${IC.chevL}</button>
-    <div class="bigc" data-a="hearCur"><div class="bn" style="color:${pcColor(c.r)}">${esc(chordSym(c))}</div><div class="sub">${esc(numeral(c, p.key))} · ${esc(QUALS[c.q].name)} · ${FN_SHORT[hf.f]}</div></div>
+    <div class="bigc" data-a="hearCur"><div class="bn" style="color:${pcColor(c.r)}">${esc(chordSym(c))}</div><div class="sub">${esc(numeral(c, keyOf(s)))} · ${esc(QUALS[c.q].name)} · ${FN_SHORT[hf.f]}</div></div>
     <button class="ib" data-a="ciNav" data-d="1" aria-label="Nächster Akkord">${IC.chevR}</button></div>
     <button class="wide mt" data-a="hearCur">${IC.play} Anhören</button></div>`;
   h += ST().instrument === 'guitar' ? guitarCard(c) : pianoCard(c);
@@ -2313,15 +2392,15 @@ function guitarCard(c) {
     ${legend(c)}${tuningControls()}</div>`;
 }
 function explainCard(c, prev, next) {
-  const ex = explainChord(c, P().key, prev, next);
+  const ex = explainChord(c, CK(), prev, next);
   return `<div class="card"><div class="h">Warum klingt das so?</div>${ex.map(x => `<div class="ex"><b>${esc(x.h)}</b><p>${esc(x.t)}</p></div>`).join('')}</div>`;
 }
 function variantsCard(c) {
   return `<div class="card"><div class="h">Fancy machen</div><div class="sub">Gleicher Grundton, andere Farbe – tippen ersetzt den Akkord</div>
-    <div class="row wrap mt">${variantsFor(c, P().key).map(v => `<button class="pill ${v.q === c.q ? 'on' : ''} ${v.inKey ? '' : 'out'}" data-a="chordVar" data-q="${esc(v.q)}">${esc(pcName(c.r) + v.q)}</button>`).join('')}</div></div>`;
+    <div class="row wrap mt">${variantsFor(c, CK()).map(v => `<button class="pill ${v.q === c.q ? 'on' : ''} ${v.inKey ? '' : 'out'}" data-a="chordVar" data-q="${esc(v.q)}">${esc(pcName(c.r) + v.q)}</button>`).join('')}</div></div>`;
 }
 function scalesCard(c) {
-  const key = P().key, list = scalesForChord(c, key);
+  const key = CK(), list = scalesForChord(c, key);
   if (!list.length) return '';
   const i = Math.min(S.ui.scaleSel, list.length - 1), sel = list[i], sp = scalePcs(sel.root, sel.mode), cp = chordPcs(c);
   let vis;
@@ -2340,7 +2419,7 @@ function scalesCard(c) {
     <button class="mt" data-a="hearScale" data-root="${sel.root}" data-mode="${sel.mode}">${IC.play} Skala anhören</button></div>`;
 }
 function suggestGroups(c, prev, act) {
-  const key = P().key, all = suggestNext(c, key, prev);
+  const key = CK(), all = suggestNext(c, key, prev);
   const top = [], seenR = new Set();
   for (const x of all) { if (seenR.has(x.c.r) || x.cat === 'borrowed' || x.cat === 'secdom') continue; seenR.add(x.c.r); top.push(x); if (top.length >= 6) break; }
   const fancy = all.filter(x => (x.cat === 'fancy' || x.cat === 'diatonic7') && !top.includes(x)).slice(0, 6);
@@ -2353,12 +2432,12 @@ function suggestCard(c, prev) {
   return `<div class="card"><div class="h">Was passt danach?</div><div class="sub">Tippen fügt nach ${esc(chordSym(c))} ein</div>${suggestGroups(c, prev, 'insertAfter')}</div>`;
 }
 function betweenCard(a, b) {
-  const list = betweenOptions(a, b, P().key);
+  const list = betweenOptions(a, b, CK());
   return `<div class="card"><div class="h">Zwischenschritt zu ${esc(chordSym(b))}</div><div class="sub">Teilt die Zeit von ${esc(chordSym(a))} und baut eine Brücke</div>
     ${list.map((o, j) => `<div class="opt"><div><b style="color:${pcColor(o.c.r)}">${esc(chordSym(o.c))}</b> · ${esc(o.name)}<div class="sub">${esc(o.why)}</div></div><div class="row"><button class="ib" data-a="hearBetween" data-j="${j}" aria-label="Anhören">${IC.play}</button><button data-a="insertBetween" data-j="${j}">Einfügen</button></div></div>`).join('')}</div>`;
 }
 function keyAssistCard() {
-  const key = P().key;
+  const key = CK();
   const rows = [0,1,2,3,4,5,6].map(d => {
     const t = diatonicChord(key, d, 3), s7 = diatonicChord(key, d, 4), hf = harmonicFunction(t, key);
     return `<div class="karow"><span class="kan">${esc(numeral(t, key))}</span>${[t, s7].map(x => `<button class="cchip mini" style="--c:${pcColor(x.r)}" data-a="hearSym" data-sym="${esc(chordSym(x))}"><b>${esc(chordSym(x))}</b></button>`).join('')}<span class="kaf">${FN_SHORT[hf.f]}</span><button class="ib sm" data-a="addSym" data-sym="${esc(chordSym(t))}" aria-label="Hinzufügen">${IC.plus}</button></div>`;
@@ -2412,7 +2491,7 @@ function fillHint(s) {
 
 /* ---------- Melodie ---------- */
 function melRows() {
-  const key = P().key, sc = scalePcs(key.root, key.mode);
+  const key = CK(), sc = scalePcs(key.root, key.mode);
   const lo = 55 + S.ui.melOct * 12, hi = lo + 24, rows = [];
   for (let m = hi; m >= lo; m--) if (S.ui.melChrom || sc.includes(mod12(m))) rows.push(m);
   return rows;
@@ -2423,7 +2502,7 @@ function chordAtStep(sec, step) {
   return null;
 }
 function vMelody() {
-  const s = curSec(), key = P().key;
+  const s = curSec(), key = CK();
   if (!s) return '<div class="card">Noch kein Teil vorhanden.</div>';
   let h = secPicker('pickSec');
   if (!s.chords.length) return h + '<div class="card"><div class="sub">Lege zuerst Akkorde für diesen Teil an – die Melodie orientiert sich daran.</div></div>';
@@ -2483,12 +2562,13 @@ function melShowCard(s, ml) {
 /* ---------- Labor ---------- */
 function vLab() {
   const t = S.ui.labTab;
-  const T = [['emo','Gefühle'], ['finder','Finder'], ['fret','Griffbrett'], ['moods','Stimmungen'], ['cheat','Spickzettel']];
-  let h = `<div class="seg wide4">${T.map(([id, l]) => `<button class="${t === id ? 'on' : ''}" data-a="labTab" data-v="${id}">${l}</button>`).join('')}</div>`;
+  const T = [['emo','Gefühle'], ['mod','Modulation'], ['finder','Finder'], ['fret','Griffbrett'], ['moods','Stimmungen'], ['cheat','Spickzettel']];
+  let h = `<div class="seg labtabs hscroll" data-keep="labtabs">${T.map(([id, l]) => `<button class="${t === id ? 'on' : ''}" data-a="labTab" data-v="${id}">${l}</button>`).join('')}</div>`;
   if (t === 'fret') h += vFretLab();
   else if (t === 'moods') h += vMoods();
   else if (t === 'cheat') h += vCheat();
   else if (t === 'emo') h += vEmo();
+  else if (t === 'mod') h += vMod();
   else h += vFinder();
   return h;
 }
@@ -2508,11 +2588,11 @@ function vFinder() {
   const res = identifyChord(midis);
   return `<div class="card"><div class="row sp"><div class="h">Akkord-Finder</div><div class="seg sm"><button class="${f.mode === 'guitar' ? 'on' : ''}" data-a="finderMode" data-v="guitar">${IC.guitar}</button><button class="${f.mode === 'piano' ? 'on' : ''}" data-a="finderMode" data-v="piano">${IC.piano}</button></div></div>
     <div class="sub">Greif etwas – ich sag dir, wie der Akkord heißt.</div>${vis}
-    <div class="results">${midis.length ? (res.length ? res.map(r => `<div class="opt"><div><b class="big" style="color:${r.c ? pcColor(r.c.r) : 'inherit'}">${esc(r.name)}</b><div class="sub">${esc(r.desc)}${r.c ? ' · ' + esc(numeral(r.c, P().key)) + ' in ' + esc(keyName(P().key)) : ''}</div></div>${r.c ? `<div class="row"><button class="ib" data-a="hearSym" data-sym="${esc(r.name)}" aria-label="Anhören">${IC.play}</button><button data-a="addSym" data-sym="${esc(r.name)}">+ Teil</button></div>` : ''}</div>`).join('') : '<div class="sub">Kein bekannter Akkord – probier einen Ton mehr oder weniger.</div>') : '<div class="sub">Noch nichts gegriffen.</div>'}</div>
+    <div class="results">${midis.length ? (res.length ? res.map(r => `<div class="opt"><div><b class="big" style="color:${r.c ? pcColor(r.c.r) : 'inherit'}">${esc(r.name)}</b><div class="sub">${esc(r.desc)}${r.c ? ' · ' + esc(numeral(r.c, CK())) + ' in ' + esc(keyName(CK())) : ''}</div></div>${r.c ? `<div class="row"><button class="ib" data-a="hearSym" data-sym="${esc(r.name)}" aria-label="Anhören">${IC.play}</button><button data-a="addSym" data-sym="${esc(r.name)}">+ Teil</button></div>` : ''}</div>`).join('') : '<div class="sub">Kein bekannter Akkord – probier einen Ton mehr oder weniger.</div>') : '<div class="sub">Noch nichts gegriffen.</div>'}</div>
     <div class="row mt"><button data-a="finderHear">${IC.play} Anhören</button><button data-a="finderClear">Leeren</button></div></div>`;
 }
 function vFretLab() {
-  const st = ST(), fb = S.ui.fb, key = P().key;
+  const st = ST(), fb = S.ui.fb, key = CK();
   const root = fb.root != null ? fb.root : key.root, mode = fb.mode || key.mode, sp = scalePcs(root, mode);
   const c = curChord(), ov = fb.overlay && c, open = tuningOpen(st.tuning, st.capo), marks = [];
   for (let s = 0; s < 6; s++) for (let f = 0; f <= 15; f++) {
@@ -2528,7 +2608,7 @@ function vFretLab() {
     <div class="row mt"><button data-a="hearScale" data-root="${root}" data-mode="${mode}">${IC.play} Anhören</button><button data-a="fbReset">Tonart des Songs</button></div>${tuningControls()}</div>`;
 }
 function moodKeyRoot(mood, prog) {
-  const key = P().key, mode = prog.mode || mood.mode;
+  const key = CK(), mode = prog.mode || mood.mode;
   const minorM = MODES[mode].minor, minorK = MODES[key.mode].minor;
   if (minorM === minorK) return key.root;
   return minorK ? mod12(key.root + 3) : mod12(key.root + 9);
@@ -2551,7 +2631,7 @@ function circleSVG(key) {
   return s + `<text x="150" y="146" class="cc">Quinten-</text><text x="150" y="162" class="cc">zirkel</text></svg>`;
 }
 function vCheat() {
-  const key = P().key;
+  const key = CK();
   const deg = [0,1,2,3,4,5,6].map(d => { const t = diatonicChord(key, d, 3), s7 = diatonicChord(key, d, 4); return `<tr><td>${esc(numeral(t, key))}</td><td style="color:${pcColor(t.r)}">${esc(chordSym(t))}</td><td>${esc(chordSym(s7))}</td><td>${FN_SHORT[harmonicFunction(t, key).f]}</td></tr>`; }).join('');
   const quals = QUAL_ORDER.filter(q => q !== '5').map(q => `<tr><td><b>${esc('C' + q)}</b></td><td>${QUALS[q].iv.map(i => TONE_ROLE[i] ? TONE_ROLE[i].replace('Grundton', '1') : i).join(' · ')}</td><td>${esc(QUALS[q].feel)}</td></tr>`).join('');
   const modes = MODE_KEYS.map(m => `<tr><td><b>${MODES[m].name}</b></td><td>${esc(MODES[m].color)}</td></tr>`).join('');
@@ -2607,7 +2687,7 @@ function emoMoves(from, key, act) {
   return rows.map(r => `<button class="emorow" data-a="${act}" data-d="${r.b}" data-sym="${esc(chordSym(chords[r.b]))}"><i style="background:${EMO_LOOPS[r.e.loop].col}"></i><b>→ ${esc(emoLabel(chords[r.b]))}</b><span>${esc(r.e.text)}${r.e.own ? ' *' : ''}</span><small>${r.e.iv}</small></button>`).join('');
 }
 function vEmo() {
-  const key = P().key, { chords, t } = emoChords(key), em = S.ui.emo;
+  const key = CK(), { chords, t } = emoChords(key), em = S.ui.emo;
   const sel = em.sel != null ? em.sel : t;
   let h = `<div class="card"><div class="h">Gefühle-Karte · ${esc(keyName(key))}</div><div class="sub">Drei Wege durch die Tonart: Terzen (rot), Quarten (gelb), Sekunden (türkis). Tippen = anhören und an den Pfad hängen.</div>${emoSVG(key)}
     ${MODE_OFF[key.mode] && key.mode !== 'minor' && key.mode !== 'harmonicMinor' ? `<div class="hint">${esc(MODES[key.mode].name)} nutzt die Akkorde von ${esc(pcName(key.root - MODE_OFF[key.mode]))} Major – in der Mitte steht deine Tonika.</div>` : ''}${key.mode === 'harmonicMinor' ? '<div class="hint">Für Harmonic Minor zeigt die Karte die natürlichen Moll-Akkorde.</div>' : ''}</div>`;
@@ -2618,9 +2698,62 @@ function vEmo() {
   return h;
 }
 function emoCard(c) {
-  const key = P().key, d = emoDegree(c, key);
+  const key = CK(), d = emoDegree(c, key);
   if (d == null) return '';
   return `<div class="card"><div class="row sp"><div class="h">Gefühl des nächsten Schritts</div><button class="ib" data-a="emoOpen" aria-label="Zur Gefühle-Karte">${IC.chevR}</button></div><div class="sub">Tippen fügt den Akkord nach ${esc(chordSym(c))} ein</div><div class="emolist">${emoMoves(d, key, 'insertAfter')}</div></div>`;
+}
+
+/* ---------- Modulation ---------- */
+function modState() {
+  const p = P(), arr = p.arrangement, m = S.ui.mod;
+  let ai = m.ai;
+  if (ai == null || ai >= arr.length) {
+    ai = -1; arr.forEach((id, i) => { if (secById(id).type === 'chorus') ai = i; });
+    if (ai < 0) ai = arr.length - 1;
+  }
+  const tgt = ai >= 0 ? secById(arr[ai]) : curSec();
+  const prev = ai > 0 ? secById(arr[ai - 1]) : null;
+  const from = keyOf(tgt);
+  const to = { root: m.root != null ? m.root : mod12(from.root + 1), mode: m.mode || from.mode };
+  return { ai, tgt, prev, from, to };
+}
+function ringSVG(key, hiRoot) {
+  const ring = chromaRing(key), sel = S.ui.mod.ring;
+  const pos = (s, r) => { const a = (s * 30 - 90) * Math.PI / 180; return [r * Math.cos(a), r * Math.sin(a)]; };
+  let lines = `<circle r="112" fill="none" stroke="#3a404b" stroke-width="3"/>`, nodes = '';
+  ring.forEach((x, i) => {
+    const R = x.kind === 'out' ? 152 : x.kind === 'in' ? 66 : 112;
+    const [cx, cy] = pos(x.s, R), rad = x.kind === 'dia' ? 23 : x.kind === 'chrom' ? 16 : 14;
+    if (x.kind === 'out' || x.kind === 'in') { const [bx, by] = pos(x.s, 112); lines += `<line x1="${bx.toFixed(1)}" y1="${by.toFixed(1)}" x2="${cx.toFixed(1)}" y2="${cy.toFixed(1)}" stroke="#3a404b" stroke-width="2"/>`; }
+    const col = { dia:'#4cc9f0', chrom:'#ff922b', out:'#ffd43b', in:'#4263eb' }[x.kind];
+    const on = sel === i, hi = hiRoot != null && x.kind === 'dia' && x.c.r === hiRoot;
+    nodes += `<g data-a="ringTap" data-i="${i}" class="en"><circle cx="${cx.toFixed(1)}" cy="${cy.toFixed(1)}" r="${rad}" fill="${col}" ${on ? 'stroke="#fff" stroke-width="3"' : ''}/>${hi ? `<circle cx="${cx.toFixed(1)}" cy="${cy.toFixed(1)}" r="${rad + 6}" fill="none" stroke="#fff" stroke-width="1.5" stroke-dasharray="3 3"/>` : ''}<text x="${cx.toFixed(1)}" y="${(cy + (x.kind === 'dia' ? 2 : 4)).toFixed(1)}" class="et ${x.kind === 'dia' ? 'mid' : ''} ${x.kind === 'in' ? 'lt' : ''}">${esc(emoLabel(x.c))}</text>${x.kind === 'dia' ? `<text x="${cx.toFixed(1)}" y="${(cy + 13).toFixed(1)}" class="et tiny">${esc(numeral(x.c, key))}</text>` : ''}</g>`;
+  });
+  return `<svg class="emo ring" viewBox="-180 -180 360 360">${lines}${nodes}<text y="4" class="el big">${esc(keyName(key))}</text></svg>`;
+}
+function vMod() {
+  const p = P(), m = S.ui.mod, st = modState();
+  if (!st.tgt) return '<div class="card">Leg zuerst einen Teil an.</div>';
+  const { from, to, ai, tgt } = st, ring = chromaRing(from), mo = modulationOptions(from, to);
+  const meth = mo.opts.find(o => o.id === m.method) || mo.opts[2];
+  let h = `<div class="card"><div class="h">Akkord-Ring · ${esc(keyName(from))}</div><div class="sub"><span class="dot" style="background:#4cc9f0"></span>leitereigen <span class="dot" style="background:#ff922b"></span>chromatisch <span class="dot" style="background:#ffd43b"></span>Moll→Dur <span class="dot" style="background:#4263eb"></span>Dur→Moll · Tippen = anhören</div>${ringSVG(from, to.root)}`;
+  if (m.ring != null && ring[m.ring]) { const c = ring[m.ring].c; h += `<div class="opt"><div><b style="color:${pcColor(c.r)}">${esc(chordSym(c))}</b><div class="sub">${esc(ringInfo(c, from))}</div></div><button data-a="addSym" data-sym="${esc(chordSym(c))}">${IC.plus} Teil</button></div>`; }
+  h += `</div>`;
+  const quick = [[1,'½ Ton hoch'], [2,'1 Ton hoch'], [-1,'½ Ton runter'], [7,'Quinte'], [5,'Quarte'], ['rel','Paralleltonart'], ['var', MODES[from.mode].minor ? 'Nach Dur' : 'Nach Moll']];
+  h += `<div class="card"><div class="h">Tonart wechseln (Modulation)</div>
+    <label class="mt blk">Ab welchem Teil?<select data-a="modAi">${p.arrangement.map((id, i) => `<option value="${i}" ${i === ai ? 'selected' : ''}>${i + 1}. ${esc(secById(id).name)}${secById(id).key ? ' (' + esc(keyName(secById(id).key)) + ')' : ''}</option>`).join('')}</select></label>
+    <div class="lbl">Von ${esc(keyName(from))} nach …</div>
+    <div class="row wrap">${quick.map(([v, l]) => `<button class="pill" data-a="modQuick" data-v="${v}">${l}</button>`).join('')}</div>
+    <div class="rootgrid mt">${NOTES.map((n, i) => `<button class="pill ${to.root === i ? 'on' : ''}" data-a="modRoot" data-v="${i}">${n}</button>`).join('')}</div>
+    <label class="mt blk">Modus <select data-a="modMode">${opts(MODES, to.mode)}</select></label>
+    <div class="target"><b>${esc(keyName(to))}</b><span>${esc(mo.rel)} · Akkorde ${semis(from, to) ? (semis(from, to) > 0 ? '+' : '') + semis(from, to) + ' Halbtöne verschoben' : 'bleiben gleich, nur neu gedeutet'}</span></div>
+    <div class="lbl">Wie kommst du dahin?</div>
+    ${mo.opts.map(o => `<div class="opt col ${o.id === meth.id ? 'sel' : ''}"><div class="row sp"><b>${esc(o.name)}</b><button class="pill ${o.id === meth.id ? 'on' : ''}" data-a="modMethod" data-v="${o.id}">${o.id === meth.id ? 'gewählt' : 'wählen'}</button></div><div class="sub">${esc(o.desc)}</div><div class="row sp"><div class="pchips">${o.chords.length ? o.chords.map(c => `<span class="pc" style="--c:${pcColor(c.r)}">${esc(chordSym(c))}${c.beats !== 4 ? '<small>½</small>' : ''}</span>`).join('') + '<span class="arrow">→</span>' : ''}<span class="pc" style="--c:${pcColor(to.root)}">${esc(chordSym(tonicChord(to)))}</span></div><button class="ib pl" data-a="modHear" data-v="${o.id}" aria-label="Anhören">${IC.play}</button></div></div>`).join('')}
+    <div class="lbl">Was passiert mit „${esc(tgt.name)}“?</div>
+    <div class="seg"><button class="${m.copy ? 'on' : ''}" data-a="modCopy" data-v="1">Kopie in neuer Tonart</button><button class="${!m.copy ? 'on' : ''}" data-a="modCopy" data-v="0">Teil selbst verschieben</button></div>
+    <div class="hint">${m.copy ? 'Nur diese Stelle im Ablauf wechselt die Tonart (z. B. der letzte Chorus). Die anderen Chorusse bleiben, wie sie sind.' : 'Der Teil wird überall im Ablauf verschoben.'}${meth.chords.length ? ' Die Überleitung kommt als eigener kurzer Teil davor.' : ''}</div>
+    <button class="wide pri mt" data-a="modApply">${IC.wand} Modulation einbauen</button></div>`;
+  return h;
 }
 
 /* ===== Sheets (Dialoge) ===== */
@@ -2636,7 +2769,7 @@ const shHead = t => `<div class="sh-h"><b>${t}</b><button class="ib" data-a="clo
 
 const SHEETS = {
   picker(sh) {
-    const s = secById(sh.secId), key = P().key;
+    const s = secById(sh.secId), key = keyOf(s);
     if (!s) return shHead('Akkord');
     const last = sh.mode === 'replace' ? s.chords[sh.idx - 1] : s.chords[s.chords.length - 1];
     const prev2 = sh.mode === 'replace' ? s.chords[sh.idx - 2] : s.chords[s.chords.length - 2];
@@ -2691,6 +2824,7 @@ const SHEETS = {
       <div class="grid2 mt"><button data-a="newEmpty">${IC.plus} Leerer Song</button><button data-a="openAssist">${IC.wand} Aus Stimmung</button></div>
       <div class="grid2 mt"><label class="btn">${IC.ul} Backup laden<input id="importFile" type="file" accept=".json,application/json" data-a="importJson" hidden></label><button data-a="exportAll">${IC.dl} Alles sichern</button></div>
       ${window._installEvt ? `<button class="wide pri mt" data-a="installApp">${IC.install} Als App installieren</button>` : ''}
+      ${!window.AndroidBridge && !inClaude() && !matchMedia('(display-mode: standalone)').matches ? `<div class="tip mt"><b>Als App aufs Handy</b><br>Android-App (APK): <a href="https://github.com/nilswerner1999-beep/akkord-labor/releases/latest/download/Akkord-Labor.apk">Akkord-Labor.apk laden</a><br>Firefox: Menü ⋮ → „Zum Startbildschirm hinzufügen“<br>Chrome: Menü ⋮ → „App installieren“</div>` : ''}
       <div class="hint">Deine Songs werden auf diesem Gerät gespeichert. Mach ab und zu ein Backup – damit kannst du sie auch auf ein anderes Gerät holen.</div>`;
   },
   assist(sh) {
@@ -2707,7 +2841,7 @@ const SHEETS = {
     return h;
   },
   follow(sh) {
-    const s = secById(sh.secId), key = P().key;
+    const s = secById(sh.secId), key = keyOf(s);
     const list = followOptions(sh.kind, s.chords, key);
     const K = [['chorus','Chorus'], ['pre','Pre-Chorus'], ['bridge','Bridge']];
     return shHead('Passender Teil zu ' + esc(s.name)) + `<div class="seg">${K.map(([k, l]) => `<button class="${sh.kind === k ? 'on' : ''}" data-a="followKind" data-v="${k}">${l}</button>`).join('')}</div>
@@ -2716,7 +2850,7 @@ const SHEETS = {
   },
   between(sh) {
     const s = secById(sh.secId), a = s.chords[sh.idx], b = sh.next;
-    const list = betweenOptions(a, b, P().key);
+    const list = betweenOptions(a, b, keyOf(s));
     return shHead('Zwischenschritt') + `<div class="sub">Zwischen <b>${esc(chordSym(a))}</b> und <b>${esc(chordSym(b))}</b>${sh.nextLabel ? ' (' + esc(sh.nextLabel) + ')' : ''}. Der neue Akkord bekommt die zweite Hälfte von ${esc(chordSym(a))}.</div>
       ${list.map((o, j) => `<div class="opt"><div><b style="color:${pcColor(o.c.r)}">${esc(chordSym(o.c))}</b> · ${esc(o.name)}<div class="sub">${esc(o.why)}</div></div><div class="row"><button class="ib" data-a="hearBetweenS" data-j="${j}" aria-label="Anhören">${IC.play}</button><button data-a="insertBetweenS" data-j="${j}">Einfügen</button></div></div>`).join('')}`;
   },
@@ -2725,6 +2859,7 @@ const SHEETS = {
     return shHead(esc(s.name)) + `<div class="row mt"><input class="txt" type="text" value="${esc(s.name)}" id="secName" data-a="noop"><button data-a="secRename">Umbenennen</button></div>
       <div class="lbl mt">Typ</div><div class="row wrap">${Object.entries(SECTION_TYPES).map(([k, t]) => `<button class="pill ${s.type === k ? 'on' : ''}" data-a="secType" data-v="${k}">${t.name}</button>`).join('')}</div>
       <div class="lbl mt">Passenden Folgeteil erzeugen</div><div class="grid3"><button data-a="followOpen" data-v="chorus">Chorus</button><button data-a="followOpen" data-v="pre">Pre-Chorus</button><button data-a="followOpen" data-v="bridge">Bridge</button></div>
+      <button class="wide mt" data-a="secMod">Tonart wechseln (Modulation) …</button>
       <div class="grid2 mt"><button data-a="secTurn">Turnaround zum nächsten Teil</button><button data-a="secMelIdea">${IC.wand} Melodie-Idee</button>
       <button data-a="secTrans" data-d="-1">Transponieren −1</button><button data-a="secTrans" data-d="1">Transponieren +1</button>
       <button data-a="secDup">${IC.copy} Duplizieren</button><button data-a="secArr">${IC.plus} In den Ablauf</button></div>
@@ -2766,8 +2901,16 @@ function toast(msg) {
   clearTimeout(_toastT); _toastT = setTimeout(() => t.classList.remove('on'), 2200);
 }
 const safeName = s => (String(s || 'song').replace(/[^\wäöüÄÖÜß\- ]+/g, '').trim().replace(/\s+/g, '-') || 'song');
+function u8ToB64(u8) { let s = ''; for (let i = 0; i < u8.length; i += 0x8000) s += String.fromCharCode.apply(null, u8.subarray(i, i + 0x8000)); return btoa(s); }
 async function saveFile(name, data) {
   const ext = name.split('.').pop().toLowerCase();
+  if (window.AndroidBridge) {
+    const u8 = typeof data === 'string' ? new TextEncoder().encode(data) : data;
+    const MIMEA = { json:'application/json', mid:'audio/midi', wav:'audio/wav', zip:'application/zip' };
+    const r = window.AndroidBridge.saveFile(name, u8ToB64(u8), MIMEA[ext] || 'application/octet-stream');
+    toast(r === 'ok' ? 'Gespeichert in Downloads/Akkord-Labor' : 'Speichern ging nicht');
+    return;
+  }
   if (inClaude()) {
     let dl = null;
     try { dl = await window.claude.use('downloads'); } catch (e) {}
@@ -2823,6 +2966,7 @@ function nextChordFor(sec, idx) {
   return null;
 }
 function transposeSection(s, d) {
+  if (s.key) s.key = { root: mod12(s.key.root + d), mode: s.key.mode };
   s.chords.forEach(c => { c.r = mod12(c.r + d); if (c.b != null) c.b = mod12(c.b + d); });
   s.melodies.forEach(m => m.notes.forEach(n => { n.m += d; }));
 }
@@ -2914,19 +3058,19 @@ const A = {
     openSheet({ type:'between', secId:s.id, idx:S.ui.ci, next:n.c, nextLabel:n.label });
   },
   hearBetweenS(el) {
-    const sh = S.ui.sheet, s = secById(sh.secId), a = s.chords[sh.idx], o = betweenOptions(a, sh.next, P().key)[+el.dataset.j];
+    const sh = S.ui.sheet, s = secById(sh.secId), a = s.chords[sh.idx], o = betweenOptions(a, sh.next, keyOf(s))[+el.dataset.j];
     playTemp([tempSec([Object.assign({}, a, { beats:2 }), Object.assign({}, o.c, { beats:2 }), Object.assign({}, sh.next, { beats:4 })])]);
   },
   insertBetweenS(el) {
-    const sh = S.ui.sheet, s = secById(sh.secId), o = betweenOptions(s.chords[sh.idx], sh.next, P().key)[+el.dataset.j];
+    const sh = S.ui.sheet, s = secById(sh.secId), o = betweenOptions(s.chords[sh.idx], sh.next, keyOf(s))[+el.dataset.j];
     splitInsert(s, sh.idx, o.c); S.ui.ci = sh.idx + 1; S.ui.sheet = null; hearChord(o.c); commit(); toast(chordSym(o.c) + ' eingefügt');
   },
   hearBetween(el) {
-    const s = curSec(), a = curChord(), b = s.chords[S.ui.ci + 1], o = betweenOptions(a, b, P().key)[+el.dataset.j];
+    const s = curSec(), a = curChord(), b = s.chords[S.ui.ci + 1], o = betweenOptions(a, b, keyOf(s))[+el.dataset.j];
     playTemp([tempSec([Object.assign({}, a, { beats:2 }), Object.assign({}, o.c, { beats:2 }), Object.assign({}, b, { beats:4 })])]);
   },
   insertBetween(el) {
-    const s = curSec(), a = curChord(), b = s.chords[S.ui.ci + 1], o = betweenOptions(a, b, P().key)[+el.dataset.j];
+    const s = curSec(), a = curChord(), b = s.chords[S.ui.ci + 1], o = betweenOptions(a, b, keyOf(s))[+el.dataset.j];
     splitInsert(s, S.ui.ci, o.c); S.ui.ci += 1; hearChord(o.c); commit(); toast(chordSym(o.c) + ' eingefügt');
   },
   insertAfter(el) { const c = parseChord(el.dataset.sym), s = curSec(); if (!c) return; S.ui.ci = insertChordAfter(s, S.ui.ci, c); hearChord(c); commit(); toast(chordSym(c) + ' eingefügt'); },
@@ -2966,18 +3110,19 @@ const A = {
     splitInsert(s, s.chords.length - 1, dom);
     S.ui.sheet = null; commit(); toast(chordSym(dom) + ' leitet zu ' + chordSym(target) + ' über');
   },
-  secMelIdea() { const s = secById(S.ui.sheet.secId); if (!s.chords.length) { toast('Erst Akkorde anlegen'); return; } s.melodies[0].notes = melodyIdea(s, P().key, Date.now() & 0xffff); S.ui.sheet = null; S.ui.tab = 'melody'; S.ui.melLayer = 0; commit(); },
+  secMelIdea() { const s = secById(S.ui.sheet.secId); if (!s.chords.length) { toast('Erst Akkorde anlegen'); return; } s.melodies[0].notes = melodyIdea(s, keyOf(s), Date.now() & 0xffff); S.ui.sheet = null; S.ui.tab = 'melody'; S.ui.melLayer = 0; commit(); },
   askDelSec() { const s = secById(S.ui.sheet.secId); openSheet({ type:'confirm', msg:`„${s.name}“ und alle Vorkommen im Ablauf löschen?`, act:'delSec', id:s.id }); },
   followOpen(el) { openSheet({ type:'follow', secId:S.ui.sheet.secId, kind:el.dataset.v }); },
   followKind(el) { S.ui.sheet.kind = el.dataset.v; render(); },
   followHear(el) {
-    const sh = S.ui.sheet, s = secById(sh.secId), o = followOptions(sh.kind, s.chords, P().key)[+el.dataset.j];
+    const sh = S.ui.sheet, s = secById(sh.secId), o = followOptions(sh.kind, s.chords, keyOf(s))[+el.dataset.j];
     playTemp([tempSec(s.chords.map(c => Object.assign({}, c))), tempSec(o.chords.map(c => Object.assign({}, c)), sh.kind)]);
   },
   followTake(el) {
-    const sh = S.ui.sheet, p = P(), s = secById(sh.secId), o = followOptions(sh.kind, s.chords, p.key)[+el.dataset.j];
+    const sh = S.ui.sheet, p = P(), s = secById(sh.secId), o = followOptions(sh.kind, s.chords, keyOf(s))[+el.dataset.j];
     const ns = newSection(sh.kind, null, o.chords, { bassStyle:s.bassStyle, chordStyle: sh.kind === 'chorus' ? 'eighths' : s.chordStyle });
     ns.why = o.name + ': ' + o.desc;
+    if (s.key) ns.key = Object.assign({}, s.key);
     if (sh.kind === 'chorus') ns.drums.crash = true;
     p.sections.splice(p.sections.indexOf(s) + 1, 0, ns);
     const ai = p.arrangement.indexOf(s.id);
@@ -3073,7 +3218,7 @@ const A = {
   melOct(el) { S.ui.melOct = Math.max(-2, Math.min(2, S.ui.melOct + (+el.dataset.d))); render(); },
   melMute() { const m = curSec().melodies[S.ui.melLayer]; m.mute = !m.mute; commit(); },
   melClear() { curSec().melodies[S.ui.melLayer].notes = []; commit(); },
-  melIdea() { const s = curSec(); s.melodies[S.ui.melLayer].notes = melodyIdea(s, P().key, (Date.now() & 0xffff)); commit(); toast('Neue Melodie-Idee'); },
+  melIdea() { const s = curSec(); s.melodies[S.ui.melLayer].notes = melodyIdea(s, keyOf(s), (Date.now() & 0xffff)); commit(); toast('Neue Melodie-Idee'); },
   melShow(el) { S.ui.melShow = el.dataset.v; render(); },
   melCell(el) {
     const s = curSec(), ml = s.melodies[S.ui.melLayer], m = +el.dataset.m, i = +el.dataset.i;
@@ -3085,23 +3230,70 @@ const A = {
     hearNotes([m], ml.sound, Math.max(0.15, l * 15 / P().bpm));
     commit();
   },
+  /* Modulation */
+  ringTap(el) { const st = modState(), i = +el.dataset.i, x = chromaRing(st.from)[i]; S.ui.mod.ring = i; hearChord(x.c); render(); },
+  modQuick(el) {
+    const st = modState(), v = el.dataset.v, m = S.ui.mod, f = st.from;
+    if (v === 'rel') { m.root = mod12(f.root + (MODES[f.mode].minor ? 3 : 9)); m.mode = MODES[f.mode].minor ? 'major' : 'minor'; }
+    else if (v === 'var') { m.root = f.root; m.mode = MODES[f.mode].minor ? 'major' : 'minor'; }
+    else { m.root = mod12(f.root + (+v)); m.mode = f.mode; }
+    m.ring = null; render();
+  },
+  modRoot(el) { S.ui.mod.root = +el.dataset.v; render(); },
+  modMethod(el) { S.ui.mod.method = el.dataset.v; render(); },
+  modCopy(el) { S.ui.mod.copy = el.dataset.v === '1'; render(); },
+  modHear(el) {
+    const st = modState(), o = modulationOptions(st.from, st.to).opts.find(x => x.id === el.dataset.v);
+    const before = (st.prev && st.prev.chords.length ? st.prev : st.tgt).chords.slice(-2).map(c => Object.assign({}, c, { beats: Math.min(4, c.beats || 4) }));
+    const d = semis(st.from, st.to);
+    const after = st.tgt.chords.slice(0, 2).map(c => ({ r: mod12(c.r + d), q: c.q, b: c.b == null ? null : mod12(c.b + d), beats: 4 }));
+    const s1 = tempSec(before); s1.key = st.prev ? keyOf(st.prev) : st.from;
+    const secs = [s1];
+    if (o.chords.length) { const s2 = tempSec(o.chords.map(c => Object.assign({}, c))); s2.key = st.to; secs.push(s2); }
+    const s3 = tempSec(after.length ? after : [Object.assign({}, tonicChord(st.to), { beats:4 })]); s3.key = st.to; secs.push(s3);
+    playTemp(secs);
+  },
+  modApply() {
+    const p = P(), m = S.ui.mod, st = modState(), o = modulationOptions(st.from, st.to).opts.find(x => x.id === m.method) || modulationOptions(st.from, st.to).opts[2];
+    const d = semis(st.from, st.to);
+    let target = st.tgt;
+    if (m.copy) {
+      const c = JSON.parse(JSON.stringify(st.tgt)); c.id = uid(); c.melodies.forEach(x => x.id = uid());
+      transposeSection(c, d); c.key = Object.assign({}, st.to); c.name = st.tgt.name + ' (' + keyName(st.to) + ')';
+      p.sections.splice(p.sections.indexOf(st.tgt) + 1, 0, c); p.arrangement[st.ai] = c.id; target = c;
+    } else { transposeSection(st.tgt, d); st.tgt.key = Object.assign({}, st.to); }
+    if (o.chords.length) {
+      const b = newSection('custom', 'Überleitung → ' + keyName(st.to), o.chords.map(c => Object.assign({}, c)), { bassStyle: target.bassStyle, chordStyle: target.chordStyle });
+      b.key = Object.assign({}, st.to); b.why = o.name + ': ' + o.desc;
+      b.drums = newDrums((st.prev && st.prev.drums.preset) || target.drums.preset, { fill: 'roll' });
+      p.sections.splice(p.sections.indexOf(target), 0, b); p.arrangement.splice(st.ai, 0, b.id);
+    }
+    target.drums.crash = true;
+    m.ai = null; m.root = null; m.mode = null; selectSection(target.id); S.ui.tab = 'song'; commit();
+    toast('Modulation nach ' + keyName(st.to) + ' eingebaut');
+  },
+  secMod() {
+    const p = P(), id = S.ui.sheet.secId; let ai = -1; p.arrangement.forEach((x, i) => { if (x === id) ai = i; });
+    if (ai < 0) { p.arrangement.push(id); ai = p.arrangement.length - 1; }
+    Object.assign(S.ui.mod, { ai, root:null, mode:null, ring:null }); S.ui.sheet = null; S.ui.tab = 'lab'; S.ui.labTab = 'mod'; window.scrollTo(0, 0); commit();
+  },
   /* Gefühle-Karte */
   emoTap(el) {
-    const d = +el.dataset.d, em = S.ui.emo, c = emoChords(P().key).chords[d];
+    const d = +el.dataset.d, em = S.ui.emo, c = emoChords(CK()).chords[d];
     hearChord(c); em.sel = d;
     if (em.path[em.path.length - 1] !== d) em.path.push(d);
     render();
   },
   emoUndo() { const em = S.ui.emo; em.path.pop(); em.sel = em.path.length ? em.path[em.path.length - 1] : null; render(); },
   emoClear() { S.ui.emo = { sel:null, path:[] }; render(); },
-  emoHear() { const ch = emoChords(P().key).chords; playTemp([tempSec(S.ui.emo.path.map(d => Object.assign({}, ch[d], { beats:4 })))]); },
+  emoHear() { const ch = emoChords(CK()).chords; playTemp([tempSec(S.ui.emo.path.map(d => Object.assign({}, ch[d], { beats:4 })))]); },
   emoAdd() {
-    const ch = emoChords(P().key).chords, em = S.ui.emo, p = P();
+    const ch = emoChords(CK()).chords, em = S.ui.emo, p = P();
     const s = newSection('verse', 'Gefühls-Pfad', em.path.map(d => ch[d]));
     s.why = em.path.map((d, i) => i ? emoEdge(em.path[i - 1], d).text : null).filter(Boolean).join(' → ');
     p.sections.push(s); p.arrangement.push(s.id); selectSection(s.id); S.ui.tab = 'song'; commit(); toast('Gefühls-Pfad als Teil angelegt');
   },
-  emoOpen() { const c = curChord(); S.ui.emo.sel = c ? emoDegree(c, P().key) : null; S.ui.tab = 'lab'; S.ui.labTab = 'emo'; window.scrollTo(0, 0); render(); },
+  emoOpen() { const c = curChord(); S.ui.emo.sel = c ? emoDegree(c, CK()) : null; S.ui.tab = 'lab'; S.ui.labTab = 'emo'; window.scrollTo(0, 0); render(); },
   /* Labor */
   labTab(el) { S.ui.labTab = el.dataset.v; render(); },
   finderMode(el) { S.ui.finder.mode = el.dataset.v; render(); },
@@ -3140,6 +3332,8 @@ function playVoicing() {
 
 /* ---- change / input ---- */
 const C = {
+  modAi(el) { Object.assign(S.ui.mod, { ai:+el.value, root:null, mode:null }); render(); },
+  modMode(el) { const st = modState(); S.ui.mod.root = st.to.root; S.ui.mod.mode = el.value; render(); },
   bpmSet(el) { const v = Math.max(40, Math.min(220, Math.round(+el.value || 90))); P().bpm = v; commit(); },
   chordStyle(el) { secById(el.dataset.id).chordStyle = el.value; commit(); },
   bassStyle(el) { secById(el.dataset.id).bassStyle = el.value; commit(); },
@@ -3176,7 +3370,7 @@ const I = {
   swing(el) { P().swing = +el.value; ['swingVal', 'swingVal2'].forEach(id => { const x = document.getElementById(id); if (x) x.textContent = Math.round(P().swing * 100) + '%'; }); commit({ noRender:true }); },
   pickText(el) {
     S.ui.pickText = el.value;
-    const c = parseChord(el.value), key = P().key, out = document.getElementById('pickParsed');
+    const c = parseChord(el.value), key = keyOf(secById(S.ui.sheet.secId)), out = document.getElementById('pickParsed');
     if (out) out.innerHTML = c ? `Erkannt: <b style="color:${pcColor(c.r)}">${esc(chordSym(c))}</b> · ${esc(numeral(c, key))} · ${esc(QUALS[c.q].name)}` : (el.value ? 'Kenne ich nicht – probier z. B. Am7 oder Dsus2.' : '');
   },
 };
@@ -3233,7 +3427,8 @@ function init() {
   document.addEventListener('visibilitychange', () => { if (document.hidden) saveNow(); });
   initDrag();
   render();
-  if ('serviceWorker' in navigator && location.protocol === 'https:' && !inClaude()) navigator.serviceWorker.register('sw.js').catch(() => {});
+  window.__back = () => { if (S.ui.sheet) { closeSheet(); return true; } if (S.ui.tab !== 'song') { S.ui.tab = 'song'; render(); return true; } return false; };
+  if ('serviceWorker' in navigator && location.protocol === 'https:' && !inClaude() && !window.AndroidBridge) navigator.serviceWorker.register('sw.js').catch(() => {});
 }
 document.addEventListener('DOMContentLoaded', init);
 

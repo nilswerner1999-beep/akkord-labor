@@ -1,0 +1,24 @@
+plugins { id 'com.android.application' }
+def run = (System.getenv('GITHUB_RUN_NUMBER') ?: '1').toInteger()
+android {
+    namespace 'de.nils.akkordlabor'
+    compileSdk 34
+    defaultConfig {
+        applicationId 'de.nils.akkordlabor'
+        minSdk 29
+        targetSdk 34
+        versionCode run
+        versionName "1.${run}"
+    }
+    signingConfigs {
+        release {
+            storeFile file('../akkordlabor.jks')
+            storePassword 'akkordlabor'
+            keyAlias 'akkordlabor'
+            keyPassword 'akkordlabor'
+        }
+    }
+    buildTypes { release { minifyEnabled false; signingConfig signingConfigs.release } }
+    compileOptions { sourceCompatibility JavaVersion.VERSION_1_8; targetCompatibility JavaVersion.VERSION_1_8 }
+}
+dependencies { implementation 'androidx.webkit:webkit:1.11.0' }
