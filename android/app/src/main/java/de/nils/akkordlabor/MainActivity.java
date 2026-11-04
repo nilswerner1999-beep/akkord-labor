@@ -1,7 +1,9 @@
 package de.nils.akkordlabor;
 
 import android.app.Activity;
+import android.Manifest;
 import android.content.ContentValues;
+import android.content.pm.PackageManager;
 import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
@@ -10,6 +12,7 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.Base64;
 import android.webkit.JavascriptInterface;
+import android.webkit.PermissionRequest;
 import android.webkit.ValueCallback;
 import android.webkit.WebChromeClient;
 import android.webkit.WebResourceRequest;
@@ -22,6 +25,8 @@ import java.io.OutputStream;
 
 public class MainActivity extends Activity {
     private static final int PICK = 1;
+    private static final int MIC = 2;
+    private PermissionRequest pendingPerm;
     private static final String START = "https://appassets.androidplatform.net/assets/www/index.html";
     private WebView web;
     private ValueCallback<Uri[]> fileCb;
@@ -57,6 +62,20 @@ public class MainActivity extends Activity {
         });
         web.setWebChromeClient(new WebChromeClient() {
             @Override
+            public void onPermissionRequest(final PermissionRequest r) {
+                runOnUiThread(() -> {
+                    boolean audio = false;
+                    for (String res : r.getResources()) if (PermissionRequest.RESOURCE_AUDIO_CAPTURE.equals(res)) audio = true;
+                    if (!audio) { r.deny(); return; }
+                    if (checkSelfPermission(Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED) {
+                        r.grant(new String[] { PermissionRequest.RESOURCE_AUDIO_CAPTURE });
+                    } else {
+                        pendingPerm = r;
+                        requestPermissions(new String[] { Manifest.permission.RECORD_AUDIO }, MIC);
+                    }
+                });
+            }
+            @Override
             public boolean onShowFileChooser(WebView v, ValueCallback<Uri[]> cb, FileChooserParams p) {
                 if (fileCb != null) fileCb.onReceiveValue(null);
                 fileCb = cb;
@@ -82,6 +101,15 @@ public class MainActivity extends Activity {
             fileCb.onReceiveValue(WebChromeClient.FileChooserParams.parseResult(res, data));
             fileCb = null;
         } else super.onActivityResult(req, res, data);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int req, String[] perms, int[] res) {
+        if (req == MIC && pendingPerm != null) {
+            if (res.length > 0 && res[0] == PackageManager.PERMISSION_GRANTED) pendingPerm.grant(new String[] { PermissionRequest.RESOURCE_AUDIO_CAPTURE });
+            else pendingPerm.deny();
+            pendingPerm = null;
+        } else super.onRequestPermissionsResult(req, perms, res);
     }
 
     @Override
