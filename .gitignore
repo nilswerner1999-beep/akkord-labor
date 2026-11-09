@@ -1,3 +1,6 @@
 android/app/build/
 android/.gradle/
 android/build/
+
+node_modules/
+dist-electron/

@@ -295,7 +295,7 @@ button.pc{min-height:30px;padding:4px 10px;border-radius:10px}
 .mm i.ph{opacity:1;transform:scaleY(1.5);box-shadow:0 0 12px var(--tc)}
 .mmph{position:absolute;top:-4px;bottom:-4px;width:2px;margin-left:-1px;background:#fff;border-radius:1px;opacity:0;box-shadow:0 0 6px #fff;transition:opacity .3s}
 .arr{display:flex;flex-wrap:wrap;gap:6px;margin-top:14px}
-.ai{display:flex;align-items:center;background:color-mix(in srgb,var(--tc,#8e8e93) 14%,var(--s2));border-radius:12px;padding:0 2px 0 0;min-height:38px;position:relative}
+.ai{display:flex;align-items:center;background:color-mix(in srgb,var(--tc,#8e8e93) 14%,var(--s2));border-radius:12px;padding:0 2px 0 0;min-height:38px;position:relative;transition:box-shadow .15s,opacity .2s}
 .ai .grip{touch-action:none;padding:8px 3px 8px 6px;color:var(--tx3);cursor:grab;display:flex}
 .ai .grip svg{width:13px;height:13px}
 .ai .an{background:none;border:0;padding:6px 4px;min-height:34px;font-size:14px;font-weight:620;gap:6px;border-radius:0}
@@ -305,7 +305,8 @@ button.pc{min-height:30px;padding:4px 10px;border-radius:10px}
 .ai.static{padding:0 12px;gap:6px;font-size:13px;font-weight:620}
 .ai.dragging{opacity:.3}
 .ai.drop{box-shadow:-3px 0 0 var(--acc)}
-.ghost{position:fixed;z-index:100;pointer-events:none;opacity:.95;box-shadow:0 14px 34px rgba(0,0,0,.55);transform:scale(1.06)}
+.ghost{position:fixed;z-index:100;pointer-events:none;opacity:.95;box-shadow:0 6px 14px rgba(0,0,0,.3);transform:scale(1);transition:transform .22s var(--spring),box-shadow .22s var(--spring)}
+.ghost.lift{box-shadow:0 18px 40px rgba(0,0,0,.6);transform:scale(1.06) rotate(1deg)}
 
 /* Aufnahme, Mixer */
 .recbtn{width:56px;height:56px;border-radius:999px;padding:0;background:rgba(255,69,58,.16);color:#ff453a;flex:none}
@@ -344,6 +345,10 @@ button.pc{min-height:30px;padding:4px 10px;border-radius:10px}
 .playround svg{width:16px;height:16px}
 .pianowrap{width:100%}
 svg.piano{width:100%;height:auto;display:block}
+.piano rect[data-a]{cursor:pointer;transition:filter .08s,transform .12s var(--snap);transform-box:fill-box;transform-origin:bottom center}
+.piano rect[data-a]:active{transform:scale(1,.94) translateY(1px);filter:brightness(1.3)}
+.fb rect[data-a]{cursor:pointer;transition:fill .08s}
+.fb rect[data-a]:active{fill:rgba(255,255,255,.18)}
 .pkl{font-size:10px;fill:#0b0d10;font-weight:700;text-anchor:middle;pointer-events:none}
 .pkl.sm{font-size:8px}
 .pkc{font-size:8px;fill:#8a919c;text-anchor:middle;pointer-events:none}
@@ -653,6 +658,21 @@ main.enter .eb-c i{animation:barUp 1s var(--spring) both;animation-delay:calc(va
 .tap{display:flex;margin:16px auto 4px;width:108px;height:108px;border-radius:999px;font-size:20px;font-weight:800;background:color-mix(in srgb,var(--acc) 20%,transparent);color:var(--acc);box-shadow:0 0 0 7px color-mix(in srgb,var(--acc) 8%,transparent)}
 .tap:active{transform:scale(.86);background:var(--acc);color:var(--on-acc);transition-duration:.05s}
 .toast{position:fixed;left:50%;bottom:calc(92px + var(--safe-b));transform:translate(-50%,24px) scale(.94);background:rgba(58,58,60,.94);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);color:#fff;padding:11px 18px;border-radius:999px;font-size:14.5px;font-weight:600;opacity:0;pointer-events:none;transition:opacity .25s,transform .55s var(--spring);z-index:200;max-width:88vw;text-align:center;box-shadow:0 12px 34px rgba(0,0,0,.5)}
+.midihud{position:fixed;left:50%;bottom:calc(78px + var(--safe-b));transform:translateX(-50%) translateY(140%);width:min(92vw,420px);background:rgba(30,30,32,.88);backdrop-filter:saturate(180%) blur(24px);-webkit-backdrop-filter:saturate(180%) blur(24px);border-radius:20px;padding:10px 14px;box-shadow:0 10px 36px rgba(0,0,0,.45),inset 0 0 0 .5px rgba(255,255,255,.1);z-index:40;opacity:0;transition:transform .32s var(--spring),opacity .3s;pointer-events:none}
+.midihud.show{transform:translateX(-50%) translateY(0);opacity:1;pointer-events:auto}
+.mh-top{display:flex;align-items:center;gap:8px}
+.mh-dot{width:8px;height:8px;border-radius:999px;background:#30d158;flex:none;animation:mhpulse 2s infinite}
+.midihud.active .mh-dot{background:var(--acc);animation:none}
+.mh-name{font-size:17px;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.mh-sub{font-size:12px;color:var(--tx2);max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.midihud [data-a="midiHeartToggle"]{display:none;flex:none}
+.midihud.active:not(.noheart) [data-a="midiHeartToggle"]{display:flex}
+.mh-piano{max-height:0;overflow:hidden;transition:max-height .28s var(--ease-in)}
+.midihud.active .mh-piano{margin-top:8px;max-height:100px}
+.mh-piano svg{width:100%;height:auto;display:block}
+.mh-piano rect,.mh-piano text{animation:keypop .22s var(--spring) both;transform-box:fill-box;transform-origin:center}
+@keyframes mhpulse{0%{box-shadow:0 0 0 0 rgba(48,209,88,.55)}70%{box-shadow:0 0 0 7px rgba(48,209,88,0)}100%{box-shadow:0 0 0 0 rgba(48,209,88,0)}}
+@keyframes keypop{from{transform:scale(.78);opacity:.4}to{transform:scale(1);opacity:1}}
 .toast.on{opacity:1;transform:translate(-50%,0) scale(1)}
 
 /* ---------- Größere Bildschirme ---------- */
@@ -716,10 +736,18 @@ const QUALS = {
   'm11':   { iv:[0,3,7,10,14,17], name:'Moll 11',        feel:'Weit, schwebend, modern' },
   '6/9':   { iv:[0,4,7,9,14],     name:'6/9',            feel:'Schimmernd, entspannt' },
   'mMaj7': { iv:[0,3,7,11],       name:'Moll-Major 7',   feel:'Düster, filmisch' },
+  '9sus4': { iv:[0,5,7,10,14],    name:'9sus4',          feel:'Schwebend mit Groove, Pop-Klassiker' },
+  '11':    { iv:[0,4,7,10,14,17], name:'Dominant 11',    feel:'Funky, modal – will nicht unbedingt auflösen' },
+  '13':    { iv:[0,4,7,10,14,17,21], name:'Dominant 13', feel:'Breit und satt, Jazz-Fusion' },
   'dim':   { iv:[0,3,6],          name:'vermindert',     feel:'Instabil, unheimlich – Durchgangsakkord' },
   'dim7':  { iv:[0,3,6,9],        name:'vermindert 7',   feel:'Dramatisch, Stummfilm-Spannung' },
   'm7b5':  { iv:[0,3,6,10],       name:'halbvermindert', feel:'Traurig und gespannt zugleich' },
   'aug':   { iv:[0,4,8],          name:'übermäßig',      feel:'Traumartig, ungelöst' },
+  '7b5':   { iv:[0,4,6,10],       name:'7b5',            feel:'Schief, durchgangsartig' },
+  '7#5':   { iv:[0,4,8,10],       name:'7#5',            feel:'Kippend, will sich unbedingt auflösen' },
+  '7b9':   { iv:[0,4,7,10,13],    name:'7b9',            feel:'Dunkel, spanisch, Flamenco-Spannung' },
+  '7#9':   { iv:[0,4,7,10,15],    name:'7#9',            feel:'Bluesig-schräg – der „Hendrix-Akkord“' },
+  '7#11':  { iv:[0,4,7,10,18],    name:'7#11',           feel:'Schwebend-jazzig, lydisch-dominant' },
   '5':     { iv:[0,7],            name:'Powerchord',     feel:'Roh, neutral – weder Dur noch Moll' },
 };
 const QUAL_KEYS = Object.keys(QUALS);
@@ -747,6 +775,14 @@ const ALIAS = {
   'dim':'dim', '°':'dim', 'o':'dim', 'dim7':'dim7', '°7':'dim7', 'o7':'dim7',
   'm7b5':'m7b5', 'ø':'m7b5', 'ø7':'m7b5', 'min7b5':'m7b5', 'm7-5':'m7b5',
   'aug':'aug', '+':'aug', '#5':'aug',
+  '9sus4':'9sus4', '9sus':'9sus4',
+  '11':'11', 'dom11':'11',
+  '13':'13', 'dom13':'13',
+  '7b5':'7b5', '7-5':'7b5',
+  '7#5':'7#5', '7+5':'7#5', 'aug7':'7#5', '7aug5':'7#5',
+  '7b9':'7b9', '7-9':'7b9',
+  '7#9':'7#9', '7+9':'7#9',
+  '7#11':'7#11', '7+11':'7#11',
   '5':'5',
 };
 function normQual(x) {
@@ -1074,7 +1110,7 @@ function scalesForChord(c, key) {
 }
 
 /* ---- Akkord-Finder ---- */
-const QUAL_ORDER = ['', 'm', '7', 'maj7', 'm7', 'sus2', 'sus4', 'add9', 'madd9', '6', 'm6', '7sus4', '9', 'maj9', 'm9', 'm11', '6/9', 'mMaj7', 'dim', 'dim7', 'm7b5', 'aug', '5'];
+const QUAL_ORDER = ['', 'm', '7', 'maj7', 'm7', 'sus2', 'sus4', 'add9', 'madd9', '6', 'm6', '7sus4', '9', 'maj9', 'm9', 'm11', '6/9', 'mMaj7', '9sus4', '11', '13', 'dim', 'dim7', 'm7b5', 'aug', '7b5', '7#5', '7b9', '7#9', '7#11', '5'];
 function identifyChord(midis) {
   if (!midis.length) return [];
   const sorted = [...midis].sort((a, b) => a - b), bass = mod12(sorted[0]);
@@ -1479,6 +1515,12 @@ const MOVABLE = {
   '5':     [['E',4,[0,2,2,X,X,X]], ['A',9,[X,0,2,2,X,X]]],
 };
 const _vCache = {};
+/** Für Akkorde mit zu vielen Tönen fürs Griffbrett: die Töne, die eine Gitarrenstimme wirklich braucht. */
+const CURATED_REQUIRED = {
+  'm11':  [0, 3, 10, 5],
+  '11':   [0, 4, 10, 17],
+  '13':   [0, 4, 10, 21],
+};
 function voicingsFor(c, tk, capo) {
   const ck = chordKey(c) + '|' + tk + '|' + capo;
   if (_vCache[ck]) return _vCache[ck];
@@ -1489,7 +1531,7 @@ function voicingsFor(c, tk, capo) {
   const fifth = mod12(c.r + 7);
   let required = new Set(pcsAll);
   if (ivs.includes(7) && pcsAll.length >= 3) required.delete(fifth);
-  if (c.q === 'm11') required = new Set([c.r, mod12(c.r + 3), mod12(c.r + 10), mod12(c.r + 5)]);
+  if (CURATED_REQUIRED[c.q]) required = new Set(CURATED_REQUIRED[c.q].map(i => mod12(c.r + i)));
   if (pcsAll.length >= 5 && !ivs.includes(7)) required.delete(c.r);
   required.add(bassPc);
   const allowed = new Set(pcsAll); allowed.add(bassPc);
@@ -2610,6 +2652,25 @@ function loadStore() {
     }
   } catch (e) {}
 }
+
+/* ===== Sammlung: eigene Akkorde zum Zusammenstellen ===== */
+const COLL_LS = 'akkordlabor.coll.v1';
+const COLL = (() => { try { return Object.assign({ folders:[], items:[] }, JSON.parse(localStorage.getItem(COLL_LS) || '{}')); } catch (e) { return { folders:[], items:[] }; } })();
+function collSave() { try { localStorage.setItem(COLL_LS, JSON.stringify(COLL)); } catch (e) {} }
+function collFind(c) { return COLL.items.find(x => chordKey(x.c) === chordKey(c)); }
+/** Fügt den Akkord hinzu oder entfernt ihn, falls er schon drin ist. Gibt zurück, ob er jetzt gespeichert ist. */
+function collToggle(c) {
+  const i = COLL.items.findIndex(x => chordKey(x.c) === chordKey(c));
+  if (i >= 0) { COLL.items.splice(i, 1); collSave(); return false; }
+  COLL.items.push({ id:uid(), c:{ r:c.r, q:c.q, b:c.b == null ? null : c.b }, folderId: (S.ui.collUi && S.ui.collUi.folder !== 'all' && S.ui.collUi.folder !== 'none') ? S.ui.collUi.folder : null, tags:[], added:Date.now() });
+  collSave(); return true;
+}
+function collRemove(id) { COLL.items = COLL.items.filter(x => x.id !== id); collSave(); }
+function collSetFolder(id, folderId) { const it = COLL.items.find(x => x.id === id); if (it) { it.folderId = folderId || null; collSave(); } }
+function collSetTags(id, tags) { const it = COLL.items.find(x => x.id === id); if (it) { it.tags = tags; collSave(); } }
+function collFolderAdd(name) { const f = { id:uid(), name }; COLL.folders.push(f); collSave(); return f; }
+function collFolderDelete(id) { COLL.folders = COLL.folders.filter(x => x.id !== id); COLL.items.forEach(x => { if (x.folderId === id) x.folderId = null; }); collSave(); }
+
 function newMelody(n) { return { id:uid(), name:'Melodie ' + n, sound:'pluck', notes:[], mute:false }; }
 function convBeats(b, from, to) {
   const f = METERS[to].beats / METERS[from].beats;
@@ -2917,7 +2978,7 @@ function tuningControls() {
 
 /* ===== UI: Ansichten ===== */
 const instSeg = () => { const st = ST(); return `<div class="seg inst"><button class="${st.instrument === 'piano' ? 'on' : ''}" data-a="inst" data-v="piano" aria-label="Klavier">${IC.piano}</button><button class="${st.instrument === 'guitar' ? 'on' : ''}" data-a="inst" data-v="guitar" aria-label="Gitarre">${IC.guitar}</button></div>`; };
-const LAB_TITLES = { cheat:'Spickzettel', lex:'Akkord-Lexikon', emo:'Gefühle-Karte', ring:'Akkord-Ring', finder:'Akkord-Finder', fret:'Griffbrett', capo:'Capo-Rechner', moods:'Stimmungen' };
+const LAB_TITLES = { cheat:'Spickzettel', lex:'Akkord-Lexikon', emo:'Gefühle-Karte', ring:'Akkord-Ring', finder:'Akkord-Finder', fret:'Griffbrett', capo:'Capo-Rechner', moods:'Stimmungen', coll:'Sammlung' };
 function hdrLab() {
   const k = LK(), pk = P().key, same = !ST().labKey;
   return `<header class="hdr lab">
@@ -2969,7 +3030,7 @@ function tabsBar() {
   const T = [['song','Song',IC.layers], ['chords','Akkorde',IC.chord], ['drums','Drums',IC.drum], ['melody','Melodie',IC.note]];
   return `<nav class="tabs">${tb(T, id => S.ui.tab === id || (id === 'song' && S.ui.tab === 'mod'), 'tab')}<button class="labbtn" data-a="goArea" data-v="lab">${IC.flask}<span>Labor</span></button></nav>`;
 }
-const LAB_TOOLS = [['finder','Finder'], ['fret','Griffbrett'], ['capo','Capo'], ['moods','Stimmungen']];
+const LAB_TOOLS = [['finder','Finder'], ['fret','Griffbrett'], ['capo','Capo'], ['moods','Stimmungen'], ['coll','Sammlung']];
 function creatorTitle() {
   const p = P(), t = S.ui.tab;
   if (t === 'song') return `<div class="lt"><h1 data-a="renameProject">${esc(p.name)}</h1></div>`;
@@ -3284,7 +3345,7 @@ function melShowCard(s, ml) {
 /* ---------- Labor ---------- */
 function vLab() {
   const t = S.ui.labTab, k = LK();
-  const TT = { cheat:['Spickzettel', esc(MODES[k.mode].color) + ' – alles, was du in ' + esc(keyName(k)) + ' brauchst.'], emo:['Gefühle-Karte', 'Welcher Akkord fühlt sich wie an – und wohin führt er?'], ring:['Akkord-Ring', 'Alle Akkorde rund um ' + esc(keyName(k)) + ', von leitereigen bis geliehen.'], finder:['Akkord-Finder', 'Greif etwas oder tippe Tasten – ich sage dir, wie der Akkord heißt.'], fret:['Griffbrett', 'Tonleitern und Akkordtöne auf dem ganzen Hals.'], moods:['Stimmungen', 'Fertige Progressionen nach Gefühl, passend zu ' + esc(keyName(k)) + '.'], capo:['Capo-Rechner', 'Tonart an deine Stimme anpassen – und trotzdem leichte offene Griffe spielen.'] };
+  const TT = { cheat:['Spickzettel', esc(MODES[k.mode].color) + ' – alles, was du in ' + esc(keyName(k)) + ' brauchst.'], emo:['Gefühle-Karte', 'Welcher Akkord fühlt sich wie an – und wohin führt er?'], ring:['Akkord-Ring', 'Alle Akkorde rund um ' + esc(keyName(k)) + ', von leitereigen bis geliehen.'], finder:['Akkord-Finder', 'Greif etwas oder tippe Tasten – ich sage dir, wie der Akkord heißt.'], fret:['Griffbrett', 'Tonleitern und Akkordtöne auf dem ganzen Hals.'], moods:['Stimmungen', 'Fertige Progressionen nach Gefühl, passend zu ' + esc(keyName(k)) + '.'], capo:['Capo-Rechner', 'Tonart an deine Stimme anpassen – und trotzdem leichte offene Griffe spielen.'], coll:['Sammlung', 'Deine gespeicherten Akkorde und Voicings – dein Baukasten für eigene Songs.'] };
   const tools = LAB_TOOLS.some(x => x[0] === t) ? `<div class="seg wide4 toolseg">${LAB_TOOLS.map(([id, l]) => `<button class="${t === id ? 'on' : ''}" data-a="labTab" data-v="${id}">${l}</button>`).join('')}</div>` : '';
   const title = TT[t] ? pageTitle('', TT[t][0], TT[t][1]) : '';
   switch (t) {
@@ -3295,6 +3356,7 @@ function vLab() {
     case 'fret': return title + tools + vFretLab();
     case 'moods': return title + tools + vMoods();
     case 'finder': return title + tools + vFinder();
+    case 'coll': return title + tools + vColl();
     default: return title + vCheat();
   }
 }
@@ -3319,7 +3381,7 @@ function vFinder() {
   }
   const res = identifyChord(midis);
   return `<div class="card"><div class="ch">${hd(f.mode === 'guitar' ? 'guitar' : 'piano', 'orange', f.mode === 'guitar' ? 'Griff eingeben' : 'Tasten eingeben')}<div class="seg sm"><button class="${f.mode === 'guitar' ? 'on' : ''}" data-a="finderMode" data-v="guitar" aria-label="Gitarre">${IC.guitar}</button><button class="${f.mode === 'piano' ? 'on' : ''}" data-a="finderMode" data-v="piano" aria-label="Klavier">${IC.piano}</button></div></div>${vis}
-    <div class="results">${midis.length ? (res.length ? res.map(r => `<div class="opt"><div><b class="big" ${r.c ? `data-a="chordView" data-sym="${esc(r.name)}"` : ''} style="color:${r.c ? pcColor(r.c.r) : 'inherit'}">${r.c ? chordHTML(r.c) : esc(r.name)}</b><div class="sub">${esc(r.desc)}${r.c ? ' · ' + esc(numeral(r.c, LK())) + ' in ' + esc(keyName(LK())) : ''}</div></div>${r.c ? `<div class="row"><button class="ib" data-a="hearSym" data-sym="${esc(r.name)}" aria-label="Anhören">${IC.play}</button><button data-a="addSym" data-sym="${esc(r.name)}">+ Teil</button></div>` : ''}</div>`).join('') : '<div class="sub">Kein bekannter Akkord – probier einen Ton mehr oder weniger.</div>') : '<div class="sub">Noch nichts gegriffen.</div>'}</div>
+    <div class="results">${midis.length ? (res.length ? res.map(r => `<div class="opt"><div><b class="big" ${r.c ? `data-a="chordView" data-sym="${esc(r.name)}"` : ''} style="color:${r.c ? pcColor(r.c.r) : 'inherit'}">${r.c ? chordHTML(r.c) : esc(r.name)}</b><div class="sub">${esc(r.desc)}${r.c ? ' · ' + esc(numeral(r.c, LK())) + ' in ' + esc(keyName(LK())) : ''}</div></div>${r.c ? `<div class="row"><button class="ib" data-a="hearSym" data-sym="${esc(r.name)}" aria-label="Anhören">${IC.play}</button><button class="ib ${collFind(r.c) ? 'on' : ''}" data-a="collToggleSym" data-sym="${esc(r.name)}" aria-label="Zur Sammlung">${IC.heart}</button><button data-a="addSym" data-sym="${esc(r.name)}">+ Teil</button></div>` : ''}</div>`).join('') : '<div class="sub">Kein bekannter Akkord – probier einen Ton mehr oder weniger.</div>') : '<div class="sub">Noch nichts gegriffen.</div>'}</div>
     <div class="row mt"><button data-a="finderHear">${IC.play} Anhören</button><button data-a="finderClear">Leeren</button></div></div>`;
 }
 function vFretLab() {
@@ -3517,9 +3579,10 @@ const famOf = mode => MODES[mode].minor ? 'min' : 'maj';
 const LEX_FAM = [
   { n:'Dur', d:'hell, stabil', col:'yellow', qs:['', '6', 'add9', '6/9', 'maj7', 'maj9'] },
   { n:'Moll', d:'weich, ernst', col:'blue', qs:['m', 'm6', 'madd9', 'm7', 'm9', 'm11', 'mMaj7'] },
-  { n:'Dominant', d:'Spannung, will weiter', col:'red', qs:['7', '9', '7sus4'] },
+  { n:'Dominant', d:'Spannung, will weiter', col:'red', qs:['7', '9', '7sus4', '9sus4', '11', '13'] },
   { n:'Schwebend', d:'ohne Terz, offen', col:'green', qs:['sus2', 'sus4', '5'] },
   { n:'Spannung', d:'vermindert und übermäßig', col:'purple', qs:['dim', 'dim7', 'm7b5', 'aug'] },
+  { n:'Altered', d:'schräg, jazzig – maximale Reibung', col:'orange', qs:['7b5', '7#5', '7b9', '7#9', '7#11'] },
 ];
 function lexPiano(c) {
   const base = 48 + c.r, ivs = QUALS[c.q].iv, top = base + Math.max(...ivs), mk = new Map();
@@ -3545,6 +3608,18 @@ function vLexikon() {
     h += `<div class="card"><div class="ch">${hd('chord', f.col, f.n)}<span class="sub">${f.d}</span></div><div class="lexgrid ${gtr ? '' : 'pno'}">${f.qs.map(q => lexTile({ r:root, q, b:null }, key, gtr)).join('')}</div></div>`;
   });
   return h + `<div class="hint center">Antippen zeigt Klang, alle Griffe und Varianten. Klavier oder Gitarre oben rechts umschalten.</div>`;
+}
+
+/* ---------- Sammlung ---------- */
+function vColl() {
+  const C = S.ui.collUi || (S.ui.collUi = { folder:'all' }), key = LK(), gtr = ST().instrument === 'guitar';
+  const folders = [['all', 'Alle'], ['none', 'Ohne Ordner'], ...COLL.folders.map(f => [f.id, f.name])];
+  const del = C.folder !== 'all' && C.folder !== 'none' ? `<button class="ib" data-a="collFolderDel" aria-label="Ordner löschen">${IC.trash}</button>` : '';
+  const chips = `<div class="card"><div class="ch"><div class="chipsrow hscroll" data-keep="collf" data-thumb="collf">${folders.map(([v, l]) => `<button class="pill ${C.folder === v ? 'on' : ''}" data-a="collFolderSel" data-v="${esc(v)}">${esc(l)}</button>`).join('')}<button class="pill" data-a="collFolderNew">${IC.plus} Ordner</button></div>${del}</div></div>`;
+  const items = COLL.items.filter(x => C.folder === 'all' ? true : C.folder === 'none' ? !x.folderId : x.folderId === C.folder);
+  if (!items.length) return chips + `<div class="card"><div class="sub center">Noch nichts gesammelt. Beim Akkord-Finder, im Lexikon oder beim MIDI-Spielen auf „Zur Sammlung“ tippen, um Akkorde hier abzulegen.</div></div>`;
+  const tiles = items.map(x => `<div class="collcard">${lexTile(x.c, key, gtr)}<div class="row mt wrap">${x.tags.map(t => `<span class="tag">${esc(t)}</span>`).join('')}<button class="ib sm" data-a="collItemMenu" data-id="${x.id}" aria-label="Verwalten">${IC.dots}</button></div></div>`).join('');
+  return chips + `<div class="lexgrid ${gtr ? '' : 'pno'} mt">${tiles}</div>`;
 }
 
 /* ---------- Capo-Rechner ---------- */
@@ -4276,7 +4351,7 @@ const SHEETS = {
     const key = sh.key || AK(), hf = harmonicFunction(c, key), sec = curSec();
     return shHead(`<span class="shc" style="color:${pcColor(c.r)}">${chordHTML(c)}</span>`) + `<div class="tags"><span class="tag">${esc(numeral(c, key))} in ${esc(keyName(key))}</span><span class="tag">${esc(QUALS[c.q].name)}</span><span class="tag fn" style="--f:${FN_COLOR[hf.f] || '#8e8e93'}">${esc(hf.label)}</span></div>
       <div class="sub mt">${esc(QUALS[c.q].feel)}. ${esc(colorDetail(c))}</div>${sh.info ? `<div class="tip">${esc(sh.info)}</div>` : ''}
-      <div class="ch mt"><button class="pri" data-a="hearSym" data-sym="${esc(chordSym(c))}">${IC.play} Anhören</button>${instSeg()}</div>
+      <div class="ch mt"><button class="pri" data-a="hearSym" data-sym="${esc(chordSym(c))}">${IC.play} Anhören</button><button class="ib ${collFind(c) ? 'on' : ''}" data-a="collToggleSym" data-sym="${esc(chordSym(c))}" aria-label="Zur Sammlung">${IC.heart}</button>${instSeg()}</div>
       ${ST().instrument === 'guitar' ? guitarCard(c) : pianoCard(c)}
       <div class="lbl">Varianten</div>
       <div class="row wrap">${variantsFor(c, key).map(v => `<button class="pill ${v.q === c.q ? 'on' : ''} ${v.inKey ? '' : 'out'}" data-a="chordSheetVar" data-sym="${esc(pcName(c.r) + v.q)}">${chordHTML({ r:c.r, q:v.q, b:null })}</button>`).join('')}</div><div class="hint">Gestrichelt: nicht aus der Tonart.</div>
@@ -4313,6 +4388,18 @@ const SHEETS = {
   rename() {
     return shHead('Song umbenennen') + `<div class="row"><input class="txt" type="text" id="projName" value="${esc(P().name)}" data-a="noop"><button class="pri" data-a="projRename">Speichern</button></div>`;
   },
+  collFolder() {
+    return shHead('Neuer Ordner') + `<div class="row"><input class="txt" type="text" id="collFolderName" placeholder="z. B. Verse-Ideen, Jazz, Lieblinge" autocomplete="off" data-a="noop"><button class="pri" data-a="collFolderSave">Anlegen</button></div>`;
+  },
+  collItem(sh) {
+    const it = COLL.items.find(x => x.id === sh.id); if (!it) return shHead('Akkord');
+    const c = it.c, folders = [['', 'Ohne Ordner'], ...COLL.folders.map(f => [f.id, f.name])];
+    return shHead(`<span class="shc" style="color:${pcColor(c.r)}">${chordHTML(c)}</span>`) +
+      `<div class="lbl">Ordner</div><div class="row wrap">${folders.map(([v, l]) => `<button class="pill ${(it.folderId || '') === v ? 'on' : ''}" data-a="collItemFolder" data-v="${esc(v)}">${esc(l)}</button>`).join('')}</div>
+      <div class="lbl mt">Tags</div><input class="txt wide" id="collTagsInp" type="text" placeholder="z. B. Intro, hell, Lieblingsgriff" autocomplete="off" value="${esc(it.tags.join(', '))}" data-a="noop">
+      <button class="pri wide mt" data-a="collTagsSave">Tags speichern</button>
+      <div class="grid2 mt"><button data-a="chordView" data-sym="${esc(chordSym(c))}">${IC.chord} Ansehen</button><button class="danger" data-a="collItemDel">${IC.trash} Entfernen</button></div>`;
+  },
   confirm(sh) {
     return shHead('Sicher?') + `<p>${esc(sh.msg)}</p><div class="grid2"><button data-a="closeSheet">Abbrechen</button><button class="danger" data-a="confirmYes">${esc(sh.yes || 'Löschen')}</button></div>`;
   },
@@ -4332,7 +4419,7 @@ const anim = (el, kf, o) => { try { return el.animate(kf, o); } catch (e) { retu
 const hap = ms => { try { if (navigator.vibrate && matchMedia('(pointer: coarse)').matches) navigator.vibrate(ms || 6); } catch (e) {} };
 
 /* Reihenfolge der Tabs für die Wischrichtung */
-const TAB_SEQ = { song:['song', 'chords', 'drums', 'melody', 'mod'], lab:['cheat', 'lex', 'emo', 'ring', 'finder', 'fret', 'capo', 'moods'], search:['find', 'analyse'], studio:['sounds', 'arrange', 'ableton'] };
+const TAB_SEQ = { song:['song', 'chords', 'drums', 'melody', 'mod'], lab:['cheat', 'lex', 'emo', 'ring', 'finder', 'fret', 'capo', 'moods', 'coll'], search:['find', 'analyse'], studio:['sounds', 'arrange', 'ableton'] };
 function viewDir(prev, next) {
   const [pa, pt] = prev.split(':'), [na, nt] = next.split(':');
   if (pa !== na) return null;
@@ -4667,6 +4754,27 @@ const A = {
   closeSheetBg(el, e) { if (e.target === el) closeSheet(); },
   renameProject() { openSheet({ type:'rename' }); },
   projRename() { const v = document.getElementById('projName').value.trim(); if (v) P().name = v; S.ui.sheet = null; commit(); },
+  collToggleSym(el) { const c = parseChord(el.dataset.sym); if (!c) return; const saved = collToggle(c); toast(saved ? 'Zur Sammlung hinzugefügt' : 'Aus der Sammlung entfernt'); render(); },
+  collFolderSel(el) { (S.ui.collUi || (S.ui.collUi = {})).folder = el.dataset.v; render(); },
+  collFolderNew() { openSheet({ type:'collFolder' }); },
+  collFolderSave() {
+    const el = document.getElementById('collFolderName'), v = el ? el.value.trim() : '';
+    if (!v) { toast('Bitte einen Namen eingeben'); return; }
+    const f = collFolderAdd(v); S.ui.collUi = { folder: f.id }; S.ui.sheet = null; render(); toast('Ordner angelegt');
+  },
+  collFolderDel() {
+    const id = S.ui.collUi && S.ui.collUi.folder;
+    if (!id || id === 'all' || id === 'none') return;
+    openSheet({ type:'confirm', msg:'Ordner löschen? Die Akkorde bleiben erhalten, nur ohne Ordner.', act:'collDelFolder', id });
+  },
+  collItemMenu(el) { openSheet({ type:'collItem', id: el.dataset.id }); },
+  collItemFolder(el) { collSetFolder(S.ui.sheet.id, el.dataset.v || null); render(); },
+  collTagsSave() {
+    const el = document.getElementById('collTagsInp'), tags = (el ? el.value : '').split(',').map(x => x.trim()).filter(Boolean);
+    collSetTags(S.ui.sheet.id, tags); S.ui.sheet = null; render(); toast('Tags gespeichert');
+  },
+  collItemDel() { collRemove(S.ui.sheet.id); S.ui.sheet = null; render(); toast('Entfernt'); },
+  midiHeartToggle(el) { const c = parseChord(el.dataset.sym); if (!c) return; const saved = collToggle(c); el.classList.toggle('on', saved); toast(saved ? 'Zur Sammlung hinzugefügt' : 'Aus der Sammlung entfernt'); },
   openKey() { const k = P().key; openSheet({ type:'key', root:k.root, mode:k.mode, trans:true }); },
   keyRoot(el) { S.ui.sheet.root = +el.dataset.v; render(); },
   keyMode(el) { S.ui.sheet.mode = el.dataset.v; render(); },
@@ -4823,6 +4931,8 @@ const A = {
       store.projects = store.projects.filter(x => x.id !== sh.id); store.deleted = store.deleted || {}; store.deleted[sh.id] = Date.now();
       if (!store.projects.length) store.projects.push(projectFromGen(generateSong('melancholisch', 9, 7), 'Mein Song'));
       if (p.id === sh.id) openProject(store.projects[0].id);
+    } else if (sh.act === 'collDelFolder') {
+      collFolderDelete(sh.id); if (S.ui.collUi) S.ui.collUi.folder = 'all';
     }
     S.ui.sheet = null; commit();
   },
@@ -5087,6 +5197,7 @@ function initDrag() {
     const from = +g.dataset.drag, item = g.closest('.ai'), arr = document.getElementById('arr');
     const r = item.getBoundingClientRect(), ghost = item.cloneNode(true);
     ghost.classList.add('ghost'); ghost.style.width = r.width + 'px'; document.body.appendChild(ghost);
+    requestAnimationFrame(() => ghost.classList.add('lift'));
     const offX = e.clientX - r.left, offY = e.clientY - r.top;
     item.classList.add('dragging');
     let to = from;
@@ -5105,6 +5216,64 @@ function initDrag() {
     move(e);
     document.addEventListener('pointermove', move); document.addEventListener('pointerup', up); document.addEventListener('pointercancel', up);
   });
+}
+
+/* ===== MIDI-Keyboard ===== */
+const MIDI = { access:null, held:new Map() };
+function midiHudEl() {
+  let el = document.getElementById('midiHud');
+  if (!el) {
+    el = document.createElement('div');
+    el.id = 'midiHud'; el.className = 'midihud';
+    el.innerHTML = `<div class="mh-top"><span class="mh-dot"></span><b class="mh-name"></b><span class="mh-sub"></span><button class="ib sm" data-a="midiHeartToggle" aria-label="Zur Sammlung">${IC.heart}</button></div><div class="mh-piano"></div>`;
+    document.body.appendChild(el);
+  }
+  return el;
+}
+function midiUpdateStatus() {
+  const el = midiHudEl();
+  const connected = !!(MIDI.access && [...MIDI.access.inputs.values()].some(i => i.state === 'connected'));
+  el.classList.toggle('show', connected);
+  if (!connected) { el.classList.remove('active'); MIDI.held.clear(); }
+}
+function midiRenderHud() {
+  const el = midiHudEl();
+  const notes = [...MIDI.held.keys()].sort((a, b) => a - b);
+  const nameEl = el.querySelector('.mh-name'), subEl = el.querySelector('.mh-sub'), heartBtn = el.querySelector('[data-a="midiHeartToggle"]'), pianoEl = el.querySelector('.mh-piano');
+  el.classList.toggle('active', notes.length > 0);
+  if (!notes.length) { nameEl.textContent = 'MIDI bereit – spiel los'; subEl.textContent = ''; el.classList.add('noheart'); pianoEl.innerHTML = ''; return; }
+  const res = identifyChord(notes), top = res[0];
+  nameEl.innerHTML = top && top.c ? chordHTML(top.c) : esc(top ? top.name : notes.map(midiName).join(' '));
+  subEl.textContent = top ? top.desc : '';
+  el.classList.toggle('noheart', !(top && top.c));
+  if (top && top.c) { heartBtn.dataset.sym = chordSym(top.c); heartBtn.classList.toggle('on', !!collFind(top.c)); }
+  const lo = Math.min(48, ...notes.map(n => n - mod12(n))), hi = Math.max(71, ...notes);
+  const marks = new Map(notes.map(m => [m, { color: top && top.c ? noteColor(mod12(m), top.c) : pcColor(mod12(m)), label:pcName(m) }]));
+  pianoEl.innerHTML = pianoSVG(lo, hi, marks);
+}
+function midiNoteOn(m, vel) {
+  MIDI.held.set(m, vel);
+  try {
+    const o = audio();
+    playVoice(o, o.bus.preview, ST().instrument === 'guitar' ? 'pluck' : 'ep', m, o.ctx.currentTime + 0.002, 1.3, Math.max(0.35, Math.min(1, vel + 0.3)));
+  } catch (e) {}
+  midiRenderHud();
+}
+function midiNoteOff(m) { MIDI.held.delete(m); midiRenderHud(); }
+function midiOnMessage(e) {
+  const d = e.data, cmd = d[0] & 0xf0, note = d[1], vel = d[2];
+  if (cmd === 0x90 && vel > 0) midiNoteOn(note, vel / 127);
+  else if (cmd === 0x80 || (cmd === 0x90 && vel === 0)) midiNoteOff(note);
+}
+function midiBind(input) { input.onmidimessage = midiOnMessage; }
+function midiInit() {
+  if (!navigator.requestMIDIAccess) return;
+  navigator.requestMIDIAccess({ sysex:false }).then(acc => {
+    MIDI.access = acc;
+    acc.inputs.forEach(midiBind);
+    acc.onstatechange = ev => { if (ev.port.type === 'input') { if (ev.port.state === 'connected') midiBind(ev.port); midiUpdateStatus(); } };
+    midiUpdateStatus();
+  }).catch(() => {});
 }
 
 /* ---- Start ---- */
@@ -5143,6 +5312,7 @@ function init() {
   window.addEventListener('scroll', () => { const v = window.scrollY > 36; if (v !== _scr) { _scr = v; document.body.classList.toggle('scrolled', v); } }, { passive:true });
   render();
   syncInit();
+  midiInit();
   window.__back = () => { if (S.ui.sheet) { closeSheet(); return true; } if (S.ui.area !== 'song') { S.ui.area = 'song'; render(); return true; } if (S.ui.tab !== 'song') { S.ui.tab = 'song'; render(); return true; } return false; };
   if ('serviceWorker' in navigator && location.protocol === 'https:' && !inClaude() && !window.AndroidBridge) navigator.serviceWorker.register('sw.js').catch(() => {});
 }

@@ -1,0 +1,30 @@
+name: Windows-Installer bauen
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  win:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Abhängigkeiten installieren
+        run: npm install
+      - name: Windows-Installer bauen
+        run: npm run dist:win
+      - name: Installer umbenennen
+        shell: bash
+        run: cp dist-electron/*.exe Akkord-Labor-Setup.exe
+      - name: Release veröffentlichen
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: win-build-${{ github.run_number }}
+          name: Akkord-Labor für Windows ${{ github.run_number }}
+          body: Windows-App (Installer). Herunterladen und ausführen.
+          files: Akkord-Labor-Setup.exe
+          make_latest: false

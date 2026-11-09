@@ -1,0 +1,47 @@
+{
+  "name": "akkord-labor",
+  "version": "1.0.0",
+  "description": "Songwriting-Labor für Klavier und Gitarre – Desktop-App",
+  "main": "electron/main.js",
+  "private": true,
+  "scripts": {
+    "start": "electron .",
+    "dist": "electron-builder",
+    "dist:win": "electron-builder --win"
+  },
+  "devDependencies": {
+    "electron": "^33.2.0",
+    "electron-builder": "^25.1.8"
+  },
+  "build": {
+    "appId": "de.nils.akkordlabor",
+    "productName": "Akkord-Labor",
+    "directories": {
+      "output": "dist-electron"
+    },
+    "files": [
+      "electron/**/*",
+      "index.html",
+      "manifest.webmanifest",
+      "icon-192.png",
+      "icon-512.png",
+      "icon-maskable-512.png",
+      "!android/**",
+      "!.github/**"
+    ],
+    "win": {
+      "target": "nsis",
+      "icon": "electron/build/icon.ico"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true
+    },
+    "linux": {
+      "target": "AppImage",
+      "icon": "icon-512.png",
+      "category": "AudioVideo"
+    }
+  }
+}
