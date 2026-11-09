@@ -3,7 +3,10 @@
 Songwriting-Labor für Klavier und Gitarre – als Web-App (PWA) und Android-App.
 
 - **Song-Creator:** Akkorde mit Lyrics, Notizen pro Teil, Bass, Drums, Melodie, Taktarten 4/4 · 3/4 · 6/8, Undo/Redo, Tempo-Tap, Metronom & Einzähler, Mikrofon-Aufnahme, Export (MIDI, MIDI je Spur, WAV)
-- **Labor:** Spickzettel, Akkord-Lexikon, Gefühle-Karte, Akkord-Ring, Finder, Griffbrett, Capo-Rechner, Stimmungen
+- **Progressionen:** Akkordfolgen bauen mit Sekundärdominanten, ii–V, Tritonus-Ersatz, verminderten Durchgängen, geliehenen Akkorden und V-Ersatz; Loop, Sichern, als Teil in den Song
+- **Labor:** Spickzettel, Akkord-Lexikon, Gefühle-Karte, Akkord-Ring, Finder, Griffbrett, Capo-Rechner, Stimmungen, Sammlung
+- **MIDI-Keyboard:** gespielte Akkorde werden live erkannt und landen per Tipp in Sammlung oder Progression
+- **Windows-App:** Installer über GitHub Actions (Electron)
 - **Song-Suche:** Chord-Text einfügen → Teile, Tonart und Harmonik erkennen → als Song importieren; Analyse des eigenen Songs
 - **Studio:** Synth-Rezepte für Ableton Live, Energiekurve & Arrangement-Vorlagen, Ableton-Workflow
 - **Sync:** Handy ↔ PC über ein privates GitHub-Gist

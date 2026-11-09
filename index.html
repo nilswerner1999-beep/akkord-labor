@@ -37,6 +37,7 @@
 body.area-lab{--acc:#3fd6c6;--on-acc:#00211e}
 body.area-search{--acc:#ff9f0a;--on-acc:#221300}
 body.area-studio{--acc:#ff4f8b;--on-acc:#fff}
+body.area-prog{--acc:#ffd60a;--on-acc:#1a1500}
 
 /* ---------- Grundlagen ---------- */
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -665,8 +666,8 @@ main.enter .eb-c i{animation:barUp 1s var(--spring) both;animation-delay:calc(va
 .midihud.active .mh-dot{background:var(--acc);animation:none}
 .mh-name{font-size:17px;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .mh-sub{font-size:12px;color:var(--tx2);max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.midihud [data-a="midiHeartToggle"]{display:none;flex:none}
-.midihud.active:not(.noheart) [data-a="midiHeartToggle"]{display:flex}
+.midihud [data-a="midiHeartToggle"],.midihud [data-a="midiAddProg"]{display:none;flex:none}
+.midihud.active:not(.noheart) [data-a="midiHeartToggle"],.midihud.active:not(.noheart) [data-a="midiAddProg"]{display:flex}
 .mh-piano{max-height:0;overflow:hidden;transition:max-height .28s var(--ease-in)}
 .midihud.active .mh-piano{margin-top:8px;max-height:100px}
 .mh-piano svg{width:100%;height:auto;display:block}
@@ -674,6 +675,42 @@ main.enter .eb-c i{animation:barUp 1s var(--spring) both;animation-delay:calc(va
 @keyframes mhpulse{0%{box-shadow:0 0 0 0 rgba(48,209,88,.55)}70%{box-shadow:0 0 0 7px rgba(48,209,88,0)}100%{box-shadow:0 0 0 0 rgba(48,209,88,0)}}
 @keyframes keypop{from{transform:scale(.78);opacity:.4}to{transform:scale(1);opacity:1}}
 .toast.on{opacity:1;transform:translate(-50%,0) scale(1)}
+
+/* Progressionen */
+.navgrid>.navt:last-child:nth-child(odd){grid-column:1/-1;min-height:104px}
+.pg-strip{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px 8px}
+.pg-bar{display:flex;gap:5px;padding-left:9px;border-left:3px solid var(--acc);border-radius:2px;min-width:0}
+.pg-bar.w2,.pg-bar.many{grid-column:span 2}
+.pg-head .pianowrap{max-width:560px}
+.pg-chip{min-width:0;min-height:66px;padding:8px 8px 8px 10px;box-shadow:none;background:color-mix(in srgb,var(--c) 15%,var(--s2))}
+.pg-chip i{color:var(--sc);font-weight:700;font-size:11px;max-width:100%;overflow:hidden;text-overflow:ellipsis}
+.pg-chip b{font-size:21px;font-weight:760;letter-spacing:-.02em;white-space:nowrap}
+.pg-chip.q1{padding:8px 4px 8px 6px}
+.pg-chip.q1 b{font-size:15px}
+.pg-chip.on{box-shadow:inset 0 0 0 2px var(--c);background:color-mix(in srgb,var(--c) 28%,var(--s2))}
+.pg-chip.ph{box-shadow:0 0 26px color-mix(in srgb,var(--c) 55%,transparent);background:color-mix(in srgb,var(--c) 48%,var(--s2));transform:scale(1.04)}
+.pg-empty{border:1.5px dashed var(--fill2);border-radius:18px;padding:26px 16px;text-align:center;color:var(--tx2);font-size:14.5px;line-height:1.45}
+.pg-empty b{display:block;color:var(--tx);font-size:17px;margin-bottom:4px}
+.pg-role{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:720;color:var(--sc);text-transform:uppercase;letter-spacing:.05em}
+.pg-role::before{content:"";width:8px;height:8px;border-radius:99px;background:var(--sc)}
+.pg-big{display:flex;background:none;padding:0;min-height:0;border-radius:6px;margin:5px 0 4px;font-size:42px;font-weight:800;letter-spacing:-.03em;line-height:1;color:var(--c)}
+.pg-head.fresh .piano rect.mk{animation:keypop .32s var(--spring) both;transform-box:fill-box;transform-origin:center bottom}
+.pg-leads{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.pg-leadbtn{flex-direction:column;align-items:flex-start;gap:1px;padding:9px 12px;min-height:56px;border-radius:14px;background:color-mix(in srgb,var(--sc) 14%,var(--s2));text-align:left;min-width:0}
+.pg-leadbtn i{font-style:normal;font-size:11px;font-weight:720;color:var(--sc);text-transform:uppercase;letter-spacing:.05em}
+.pg-leadbtn b{font-size:17px;font-weight:720;white-space:nowrap}
+.pgdot{width:8px;height:8px;border-radius:99px;display:inline-block;flex:none}
+.pg-cols{display:grid;grid-template-columns:repeat(7,minmax(88px,1fr));gap:8px;margin-top:12px;padding-bottom:2px}
+.pg-col{display:flex;flex-direction:column;align-items:stretch;gap:3px;min-width:0}
+.pg-lead{flex-direction:column;gap:0;min-height:48px;padding:5px 4px;border-radius:12px;background:color-mix(in srgb,var(--sc) 16%,var(--s2))}
+.pg-lead b{font-size:14.5px;font-weight:700;white-space:nowrap}
+.pg-arr{text-align:center;color:var(--sc);font-size:15px;line-height:16px;font-weight:800;height:16px}
+.pg-tile{flex-direction:column;gap:1px;min-height:70px;padding:8px 4px;border-radius:16px;background:color-mix(in srgb,var(--c) 18%,var(--s2));box-shadow:inset 0 -3px 0 var(--c);min-width:0}
+.pg-tile i{font-style:normal;font-size:11.5px;font-weight:650;color:var(--tx2)}
+.pg-tile b{font-size:20px;font-weight:780;letter-spacing:-.02em;white-space:nowrap}
+.pg-tiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(96px,1fr));gap:8px;margin-top:12px}
+.pg-tiles .pg-tile b{font-size:17px}
+@media (min-width:820px){.pg-strip{grid-template-columns:repeat(4,minmax(0,1fr))}.pg-bar.many{grid-column:auto}.pg-leads{grid-template-columns:repeat(4,1fr)}}
 
 /* ---------- Größere Bildschirme ---------- */
 @media (max-width:380px){.seg button{padding:5px 9px}.hdr .r2{gap:4px}.keychip{padding:6px 10px;font-size:13px}.tools button{font-size:10px}}
@@ -713,6 +750,7 @@ const SAMPLE_DATA = {"piano": {"36": "SUQzBAAAAAAAI1RTU0UAAAAPAAADTGF2ZjYwLjE2Lj
 /* ===== Musiktheorie-Kern ===== */
 const NOTES = ['C','C#','D','D#','E','F','F#','G','G#','A','A#','B'];
 const mod12 = n => ((n % 12) + 12) % 12;
+const FLAT_NOTES = ['C','D♭','D','E♭','E','F','G♭','G','A♭','A','B♭','B'];
 const pcName = pc => NOTES[mod12(pc)];
 const midiName = m => pcName(m) + (Math.floor(m / 12) - 1);
 const mtof = m => 440 * Math.pow(2, (m - 69) / 12);
@@ -2364,7 +2402,8 @@ function tick() {
   }
 }
 function livePlayUpdate() {
-  if (!PL.on || PL.scope.type === 'temp') return;
+  if (!PL.on) return;
+  if (PL.scope.type === 'temp') { if (!PL.scope.prog) return; PL.scope.sections = [pgSec()]; }
   const proj = P(), D = buildEvents(proj, PL.scope);
   if (!D.total) { stopPlay(); return; }
   const oldSpb = PL.spb, newSpb = 60 / proj.bpm;
@@ -2407,6 +2446,7 @@ function uiLoop() {
       document.querySelectorAll(`[data-mm="${p.secId}"]`).forEach(el => { el.classList.add('ph'); _ph.push(el); });
       const pc = document.getElementById('nowChord');
       if (pc) { const s = P().sections.find(x => x.id === p.secId); const c = s && s.chords[p.ci]; pc.textContent = c ? chordSym(c) : ''; }
+      if (p.secId === 'prog') pgNow(p.ci);
     }
   }
   if (p && PL.data && PL.data.total) {
@@ -2846,6 +2886,7 @@ const IC = {
   clock: svgI('<circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/>'),
   link: svgI('<path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/>'),
   install: svgI('<rect x="6" y="2" width="12" height="20" rx="2"/><path d="M12 7v7M9 11l3 3 3-3"/>'),
+  blocks: svgI('<rect x="3" y="4" width="7" height="7" rx="2"/><rect x="14" y="4" width="7" height="7" rx="2"/><rect x="3" y="14" width="7" height="7" rx="2"/><path d="M14 17.5h7M17.5 14v7"/>'),
 };
 
 /* ---- Klavier ---- */
@@ -2858,7 +2899,7 @@ function pianoSVG(from, to, marks, opts) {
   let s = `<svg class="piano" viewBox="0 0 ${width} ${H + 1}" preserveAspectRatio="xMidYMid meet">`;
   whites.forEach((m, i) => {
     const mk = marks.get(m), x = i * W;
-    s += `<rect x="${x + 0.5}" y="0.5" width="${W - 1}" height="${H}" rx="3" fill="${mk ? mk.color : '#dfe3e8'}" stroke="#0d0f13" ${click(m)}/>`;
+    s += `<rect x="${x + 0.5}" y="0.5" width="${W - 1}" height="${H}" rx="3" fill="${mk ? mk.color : '#dfe3e8'}" stroke="#0d0f13" ${mk ? 'class="mk" ' : ''}${click(m)}/>`;
     if (mk && mk.label) s += `<text x="${x + W / 2}" y="${H - 8}" class="pkl">${esc(mk.label)}</text>`;
     else if (mod12(m) === 0) s += `<text x="${x + W / 2}" y="${H - 8}" class="pkc">C${Math.floor(m / 12) - 1}</text>`;
   });
@@ -2866,7 +2907,7 @@ function pianoSVG(from, to, marks, opts) {
     const b = m + 1;
     if (b > to || !isBlack(b)) return;
     const mk = marks.get(b), x = (i + 1) * W - BW / 2;
-    s += `<rect x="${x}" y="0.5" width="${BW}" height="${BH}" rx="2" fill="${mk ? mk.color : '#1b1e24'}" stroke="#0d0f13" ${click(b)}/>`;
+    s += `<rect x="${x}" y="0.5" width="${BW}" height="${BH}" rx="2" fill="${mk ? mk.color : '#1b1e24'}" stroke="#0d0f13" ${mk ? 'class="mk" ' : ''}${click(b)}/>`;
     if (mk && mk.label) s += `<text x="${x + BW / 2}" y="${BH - 7}" class="pkl sm">${esc(mk.label)}</text>`;
   });
   return s + '</svg>';
@@ -2944,9 +2985,9 @@ function chip(c, key, attrs, cls) {
 /* Lead-Sheet-Satz: Grundton groß, # und Erweiterung hochgestellt, Bass kleiner */
 function chordHTML(c, cls) {
   if (!c) return '';
-  const root = pcName(c.r), q = c.q || '', bass = c.b != null && c.b !== c.r ? pcName(c.b) : '';
+  const root = c.fl ? FLAT_NOTES[c.r] : pcName(c.r), q = c.q || '', bass = c.b != null && c.b !== c.r ? pcName(c.b) : '';
   const m = /^m(?!aj)/.test(q) ? 'm' : '', rest = m ? q.slice(1) : q;
-  return `<span class="cs${cls ? ' ' + cls : ''}"><span class="cr">${root[0]}</span>${root[1] ? '<span class="ca">#</span>' : ''}${m ? '<span class="cm">m</span>' : ''}${rest ? `<span class="cq">${esc(rest)}</span>` : ''}${bass ? `<span class="cb">/${esc(bass)}</span>` : ''}</span>`;
+  return `<span class="cs${cls ? ' ' + cls : ''}"><span class="cr">${root[0]}</span>${root[1] ? `<span class="ca">${root[1]}</span>` : ''}${m ? '<span class="cm">m</span>' : ''}${rest ? `<span class="cq">${esc(rest)}</span>` : ''}${bass ? `<span class="cb">/${esc(bass)}</span>` : ''}</span>`;
 }
 const symHTML = sym => { const c = parseChord(sym); return c ? chordHTML(c) : esc(sym); };
 /* Objekt-IDs für Animationen (ändert keine Daten) */
@@ -3002,6 +3043,7 @@ function hdr() {
   if (S.ui.area === 'lab') return hdrLab();
   if (S.ui.area === 'search') return hdrSimple(S.ui.searchTab === 'analyse' ? 'Analyse' : 'Song-Suche');
   if (S.ui.area === 'studio') return hdrSimple('Studio');
+  if (S.ui.area === 'prog') return hdrProg();
   const p = P(), st = ST();
   return `<header class="hdr">
   <div class="r1">
@@ -3027,6 +3069,7 @@ function tabsBar() {
   }
   if (a === 'search') return `<nav class="tabs">${tb([['find','Suchen',IC.search], ['analyse','Analyse',IC.chart]], id => (S.ui.searchTab || 'find') === id, 'searchTab')}${back}</nav>`;
   if (a === 'studio') return `<nav class="tabs">${tb([['sounds','Sounds',IC.sliders], ['arrange','Arrangement',IC.chart], ['ableton','Ableton',IC.live]], id => (S.ui.studioTab || 'sounds') === id, 'studioTab')}${back}</nav>`;
+  if (a === 'prog') return `<nav class="tabs">${tb([['build','Bauen',IC.blocks], ['ideas','Ideen',IC.book], ['saved','Meine',IC.heart]], id => pgU().tab === id, 'pgTab')}${back}</nav>`;
   const T = [['song','Song',IC.layers], ['chords','Akkorde',IC.chord], ['drums','Drums',IC.drum], ['melody','Melodie',IC.note]];
   return `<nav class="tabs">${tb(T, id => S.ui.tab === id || (id === 'song' && S.ui.tab === 'mod'), 'tab')}<button class="labbtn" data-a="goArea" data-v="lab">${IC.flask}<span>Labor</span></button></nav>`;
 }
@@ -3042,6 +3085,7 @@ function view() {
   if (a === 'lab') return vLab();
   if (a === 'search') return vSearch();
   if (a === 'studio') return vStudio();
+  if (a === 'prog') return vProg();
   let inner;
   switch (S.ui.tab) {
     case 'mod': inner = vMod(); break;
@@ -3569,6 +3613,7 @@ const AREAS = {
   lab:    { name:'Labor',        sub:'Spickzettel, Lexikon, Gefühle, Ring, Capo & Tools', acc:'#3fd6c6', ic:'flask' },
   search: { name:'Song-Suche',   sub:'Chords finden, einfügen, analysieren, importieren', acc:'#ff9f0a', ic:'globe' },
   studio: { name:'Studio',       sub:'Synth-Rezepte für Ableton, Arrangement, Mix', acc:'#ff4f8b', ic:'sliders' },
+  prog:   { name:'Progressionen', sub:'Akkordfolgen bauen: Dominanten, ii–V, geliehene Farben', acc:'#ffd60a', ic:'blocks' },
 };
 const TYPE_COL = { intro:'#64d2ff', verse:'#0a84ff', pre:'#bf5af2', chorus:'#ff4f8b', bridge:'#ff9f0a', solo:'#30d158', outro:'#5ac8fa', custom:'#8e8e93' };
 const FN_COLOR = { T:'#ffd60a', S:'#64d2ff', D:'#ff453a', X:'#bf5af2', M:'#30d158', N:'#ffd60a', B:'#64d2ff' };
@@ -4388,6 +4433,10 @@ const SHEETS = {
   rename() {
     return shHead('Song umbenennen') + `<div class="row"><input class="txt" type="text" id="projName" value="${esc(P().name)}" data-a="noop"><button class="pri" data-a="projRename">Speichern</button></div>`;
   },
+  pgSave() {
+    return shHead('Progression sichern') + `<div class="pchips">${PG.chords.map(c => `<span class="pc" style="--c:${pcColor(c.r)}">${chordHTML(c)}</span>`).join('')}</div>
+      <div class="row mt"><input class="txt" type="text" id="pgName" value="Progression ${PG.saved.length + 1}" autocomplete="off" data-a="noop"><button class="pri" data-a="pgSaveDo">Sichern</button></div>`;
+  },
   collFolder() {
     return shHead('Neuer Ordner') + `<div class="row"><input class="txt" type="text" id="collFolderName" placeholder="z. B. Verse-Ideen, Jazz, Lieblinge" autocomplete="off" data-a="noop"><button class="pri" data-a="collFolderSave">Anlegen</button></div>`;
   },
@@ -4419,7 +4468,7 @@ const anim = (el, kf, o) => { try { return el.animate(kf, o); } catch (e) { retu
 const hap = ms => { try { if (navigator.vibrate && matchMedia('(pointer: coarse)').matches) navigator.vibrate(ms || 6); } catch (e) {} };
 
 /* Reihenfolge der Tabs für die Wischrichtung */
-const TAB_SEQ = { song:['song', 'chords', 'drums', 'melody', 'mod'], lab:['cheat', 'lex', 'emo', 'ring', 'finder', 'fret', 'capo', 'moods', 'coll'], search:['find', 'analyse'], studio:['sounds', 'arrange', 'ableton'] };
+const TAB_SEQ = { song:['song', 'chords', 'drums', 'melody', 'mod'], lab:['cheat', 'lex', 'emo', 'ring', 'finder', 'fret', 'capo', 'moods', 'coll'], search:['find', 'analyse'], studio:['sounds', 'arrange', 'ableton'], prog:['build', 'ideas', 'saved'] };
 function viewDir(prev, next) {
   const [pa, pt] = prev.split(':'), [na, nt] = next.split(':');
   if (pa !== na) return null;
@@ -4536,8 +4585,8 @@ function initSheetDrag() {
 
 /* ===== App: Rendern, Aktionen, Start ===== */
 let _lastView = '';
-const ONE_COL = ['song:drums', 'song:melody', 'song:mod', 'lab:emo', 'lab:ring', 'lab:fret'];
-function viewKey() { const a = S.ui.area; return a + ':' + (a === 'song' ? S.ui.tab : a === 'lab' ? S.ui.labTab : a === 'search' ? (S.ui.searchTab || 'find') : (S.ui.studioTab || 'sounds')); }
+const ONE_COL = ['song:drums', 'song:melody', 'song:mod', 'lab:emo', 'lab:ring', 'lab:fret', 'prog:build'];
+function viewKey() { const a = S.ui.area; return a + ':' + (a === 'song' ? S.ui.tab : a === 'lab' ? S.ui.labTab : a === 'search' ? (S.ui.searchTab || 'find') : a === 'prog' ? pgU().tab : (S.ui.studioTab || 'sounds')); }
 function render() {
   const app = document.getElementById('app');
   const keep = [...document.querySelectorAll('[data-keep]')].map(el => [el.dataset.keep, el.scrollLeft, el.scrollTop]);
@@ -4545,7 +4594,7 @@ function render() {
   const before = enter ? null : flipCapture();
   const dir = enter && prev ? viewDir(prev, vk) : 0;
   const b = document.body;
-  ['song', 'lab', 'search', 'studio'].forEach(a => b.classList.toggle('area-' + a, S.ui.area === a));
+  ['song', 'lab', 'search', 'studio', 'prog'].forEach(a => b.classList.toggle('area-' + a, S.ui.area === a));
   app.innerHTML = hdr() + `<main id="view"${enter && prev && MO.on ? ` class="enter" style="--dx:${(dir || 0) * 26}px;--dy:${dir == null ? 14 : 0}px"` : ''}><div class="vw${ONE_COL.includes(vk) ? ' one' : ''}">${view()}</div></main>` + tabsBar() + sheetHtml();
   keep.forEach(([k, l, t]) => { const el = document.querySelector(`[data-keep="${k}"]`); if (el) { el.scrollLeft = l; el.scrollTop = t; } });
   b.classList.toggle('noscroll', !!S.ui.sheet);
@@ -4775,6 +4824,48 @@ const A = {
   },
   collItemDel() { collRemove(S.ui.sheet.id); S.ui.sheet = null; render(); toast('Entfernt'); },
   midiHeartToggle(el) { const c = parseChord(el.dataset.sym); if (!c) return; const saved = collToggle(c); el.classList.toggle('on', saved); toast(saved ? 'Zur Sammlung hinzugefügt' : 'Aus der Sammlung entfernt'); },
+  midiAddProg(el) { const c = parseChord(el.dataset.sym); if (!c) return; pgInsert([c]); pgStore(); if (S.ui.area === 'prog') { if (PL.on) livePlayUpdate(); render(); } toast(chordSym(c) + ' liegt in der Progression'); },
+  /* Progressionen */
+  pgTab(el) { pgU().tab = el.dataset.v; render(); },
+  pgAdd(el) { hap(6); const list = pgDec(el.dataset.ch), items = pgInsert(list); el.dataset.flip = 'pg' + items[items.length - 1].id; pgHearSeq(list); pgDone(); },
+  pgSel(el) { const U = pgU(), i = +el.dataset.i; if (U.sel === i) U.sel = null; else { U.sel = i; hap(4); if (!PL.on) hearChord(PG.chords[i]); } render(); },
+  pgKind(el) { PG.lead = el.dataset.v; pgStore(); render(); },
+  pgFour(el) { PG.four = el.dataset.v === '1'; pgStore(); render(); },
+  pgMode(el) { PG.key = { root:pgKey().root, mode:el.dataset.v }; pgDone(); },
+  pgMove(el) { const U = pgU(), i = U.sel, j = i + (+el.dataset.d); if (i == null || j < 0 || j >= PG.chords.length) return; pgSnap(); const [x] = PG.chords.splice(i, 1); PG.chords.splice(j, 0, x); U.sel = j; hap(4); pgDone(); },
+  pgLen(el) { const c = PG.chords[pgU().sel]; if (!c) return; pgSnap(); c.beats = +el.dataset.v; pgDone(); },
+  pgDel() { const U = pgU(); if (U.sel == null || !PG.chords[U.sel]) return; pgSnap(); PG.chords.splice(U.sel, 1); U.sel = null; hap(6); pgDone(); },
+  pgHeart() { const c = PG.chords[pgU().sel]; if (!c) return; const saved = collToggle(c); toast(saved ? 'Zur Sammlung hinzugefügt' : 'Aus der Sammlung entfernt'); render(); },
+  pgLeadIn(el) { const i = pgU().sel; if (i == null || !PG.chords[i]) return; hap(8); const t = PG.chords[i], items = pgLeadBefore(i, el.dataset.v); el.dataset.flip = 'pg' + items[items.length - 1].id; pgHearSeq([...items, t]); pgDone(); },
+  pgUndo() { if (!PG_HIST.length) return; PG.chords = JSON.parse(PG_HIST.pop()); pgU().sel = null; pgDone(); },
+  pgClear() { if (!PG.chords.length) return; pgSnap(); PG.chords = []; pgU().sel = null; if (PL.on) stopPlay(true); pgDone(); toast('Geleert – Rückgängig holt alles zurück'); },
+  pgPlay() {
+    hap(8);
+    if (PL.on) { stopPlay(true); render(); return; }
+    if (!PG.chords.length) { toast('Erst ein paar Akkorde antippen'); return; }
+    startPlay({ type:'temp', prog:true, sections:[pgSec()] }, true); render();
+  },
+  pgToSong() { if (PG.chords.length) pgSongAdd('Progression', PG.chords, pgKey()); },
+  pgSaveAsk() { if (PG.chords.length) openSheet({ type:'pgSave' }); },
+  pgSaveDo() {
+    const el = document.getElementById('pgName'), name = (el && el.value.trim()) || 'Progression';
+    PG.saved.unshift({ id:uid(), name, key:Object.assign({}, pgKey()), chords:pgPlain(PG.chords) });
+    pgStore(); S.ui.sheet = null; render(); toast('Gesichert unter „Meine“');
+  },
+  pgSavedHear(el) { const s = PG.saved.find(x => x.id === el.dataset.id); if (s) playTemp([tempSec(pgPlain(s.chords), 'verse', { meter:'4/4' })], s.key); },
+  pgSavedLoad(el) {
+    const s = PG.saved.find(x => x.id === el.dataset.id); if (!s) return;
+    pgSnap(); PG.key = Object.assign({}, s.key); PG.chords = pgPlain(s.chords).map(c => Object.assign({ id:uid() }, c));
+    const U = pgU(); U.sel = null; U.tab = 'build'; pgDone();
+  },
+  pgSavedSong(el) { const s = PG.saved.find(x => x.id === el.dataset.id); if (s) pgSongAdd(s.name, s.chords, s.key); },
+  pgSavedDel(el) { PG.saved = PG.saved.filter(x => x.id !== el.dataset.id); pgStore(); render(); toast('Gelöscht'); },
+  pgIdeaHear(el) { const e = PG_IDEAS[+el.dataset.g].ex[+el.dataset.e], R = pgKey().root; playTemp([tempSec(tmplChords(e[1], R), 'verse', { meter:'4/4' })], { root:R, mode:'major' }); },
+  pgIdeaLoad(el) {
+    const e = PG_IDEAS[+el.dataset.g].ex[+el.dataset.e], R = pgKey().root;
+    pgSnap(); PG.key = { root:R, mode:'major' }; PG.chords = tmplChords(e[1], R).map(c => Object.assign({ id:uid() }, c));
+    const U = pgU(); U.sel = null; U.tab = 'build'; pgDone(); toast('„' + e[0] + '“ geladen – jetzt weiterbauen');
+  },
   openKey() { const k = P().key; openSheet({ type:'key', root:k.root, mode:k.mode, trans:true }); },
   keyRoot(el) { S.ui.sheet.root = +el.dataset.v; render(); },
   keyMode(el) { S.ui.sheet.mode = el.dataset.v; render(); },
@@ -5139,6 +5230,7 @@ const C = {
   countIn(el) { P().countIn = el.checked; commit({ noRender:true }); },
   bpmRange(el) { P().bpm = +el.value; commit(); },
   labRoot(el) { const k = LK(); ST().labKey = { root:+el.value, mode:k.mode }; S.ui.labRing = null; saveSoon(); render(); },
+  pgRoot(el) { const k = pgKey(), d = +el.value - k.root; pgSnap(); PG.chords.forEach(c => { c.r = mod12(c.r + d); if (c.b != null) c.b = mod12(c.b + d); }); PG.key = { root:+el.value, mode:k.mode }; pgDone(); },
   modAi(el) { Object.assign(S.ui.mod, { ai:+el.value, root:null, mode:null }); render(); },
   modMode(el) { const st = modState(); S.ui.mod.root = st.to.root; S.ui.mod.mode = el.value; render(); },
   bpmSet(el) { const v = Math.max(40, Math.min(220, Math.round(+el.value || 90))); P().bpm = v; commit(); },
@@ -5218,6 +5310,225 @@ function initDrag() {
   });
 }
 
+/* ===== Progressionen: Akkordfolgen bauen ===== */
+const PG_LS = 'akkordlabor.prog.v1';
+const PG = (() => { const d = { key:null, chords:[], saved:[], four:false, lead:'sec' }; try { Object.assign(d, JSON.parse(localStorage.getItem(PG_LS) || '{}')); } catch (e) {} return d; })();
+const PG_HIST = [];
+const PG_COL = { dia:'#98989f', sec:'#ff453a', iiv:'#64d2ff', tri:'#bf5af2', dim:'#ff9f0a', bor:'#30d158', alt:'#ff4f8b' };
+const PG_NAME = { dia:'Leitereigen', sec:'Sekundärdominante', iiv:'ii–V', tri:'Tritonus-Ersatz', dim:'Vermindert', bor:'Geliehen', alt:'V-Ersatz' };
+const PG_LEADS = [
+  ['sec', 'Dominante', 'Eine Quinte über dem Ziel, als Dur-7 – zieht kräftig hinein.'],
+  ['iiv', 'ii–V', 'Kleiner Anlauf: erst ii, dann V, dann ankommen.'],
+  ['tri', 'Tritonus', 'Einen Halbton über dem Ziel – rutscht weich hinein.'],
+  ['dim', 'Vermindert', 'Einen Halbton unter dem Ziel – schiebt sich von unten hinein.'],
+];
+/** Beispiele als [Halbton über dem Grundton, Typ, Schläge] – gedacht in Dur */
+const PG_IDEAS = [
+  { s:'dia', n:'Leitereigen', d:'Die sieben Akkorde der Tonart – dein Zuhause. Alles andere führt hierher zurück.', ex:[
+    ['Pop-Achse', [[0,''],[7,''],[9,'m'],[5,'']]],
+    ['Jazz-Kadenz', [[2,'m7'],[7,'7'],[0,'maj7'],[9,'m7']]] ] },
+  { s:'sec', n:'Sekundärdominanten', d:'Vor jeden Akkord passt seine eigene Dominante: eine Quinte darüber, als Dur-7. Sie gehört nicht zur Tonart – genau das macht sie spannend.', ex:[
+    ['Dominant-Kette', [[0,'',2],[4,'7',2],[9,'m7',2],[9,'7',2],[2,'m7',2],[2,'7',1],[7,'7',1],[0,'']]],
+    ['Zur Subdominante', [[0,'',2],[0,'7',2],[5,''],[7,'7'],[0,'']]] ] },
+  { s:'bor', n:'Geliehene Akkorde', d:'Akkorde aus dem gleichnamigen Moll leihen und wieder zurückkehren: gleiche Heimat, dunklere Farbe.', ex:[
+    ['Moll-Subdominante', [[0,''],[5,''],[5,'m7'],[0,'']]],
+    ['Großes Kino', [[0,''],[8,'maj7'],[10,'7'],[0,'']]],
+    ['Phrygischer Schatten', [[0,'maj7'],[1,'maj7'],[0,'maj7'],[7,'m7']]] ] },
+  { s:'iiv', n:'ii–V', d:'Zur Dominante gehört ein kleiner Anlauf. Ist das Ziel ein Moll-Akkord, wird die ii halbvermindert und die V alteriert.', ex:[
+    ['ii–V zur IV', [[0,'',2],[7,'m7',1],[0,'7',1],[5,'']]],
+    ['Moll-ii–V zur vi', [[0,'',2],[11,'m7b5',1],[4,'7b9',1],[9,'m']]],
+    ['Backdoor', [[0,'',2],[5,'m7',1],[10,'7',1],[0,'']]],
+    ['Über die vi zur IV', [[0,'',2],[9,'m7',1],[2,'7',1],[5,'']]],
+    ['Über die vii zur IV', [[0,'',2],[11,'m7',1],[4,'7',1],[5,'']]] ] },
+  { s:'tri', n:'Tritonus-Ersatz', d:'Jede Dominante lässt sich durch die Dominante einen Tritonus entfernt ersetzen. Merksatz: Dur-7 einen Halbton über dem Ziel.', ex:[
+    ['Halbton-Rutsche', [[0,'',2],[10,'7',2],[9,'m',2],[6,'7',2],[5,'',2],[8,'7',2],[7,'']]],
+    ['Tritonus-ii–V', [[0,'',2],[8,'m7',1],[1,'7',1],[0,'']]] ] },
+  { s:'dim', n:'Verminderte Durchgänge', d:'Ein verminderter Septakkord einen Halbton unter dem Ziel schiebt sich von unten hinein – der Bass läuft chromatisch.', ex:[
+    ['Chromatisch hoch', [[0,'maj7',2],[1,'dim7',2],[2,'m7',2],[3,'dim7',2],[4,'m7',2],[9,'7',2],[2,'m7',2],[7,'7',2]]] ] },
+  { s:'alt', n:'V-Ersatz', d:'Statt der normalen Dominante: Umwege, die trotzdem nach Hause führen.', ex:[
+    ['Moll-iv mit Sexte', [[0,''],[5,''],[5,'m6'],[0,'']]],
+    ['Durch die Hintertür', [[0,''],[9,'m7'],[10,'7'],[0,'']]],
+    ['Von oben', [[2,'m7'],[1,'7'],[0,'maj7'],[0,'maj7']]] ] },
+];
+const pgU = () => S.ui.pg || (S.ui.pg = { sel:null, tab:'build' });
+function pgKey() { if (!PG.key) { const k = P().key; PG.key = { root:k.root, mode: MODES[k.mode].minor ? 'minor' : 'major' }; } return PG.key; }
+function pgStore() { try { localStorage.setItem(PG_LS, JSON.stringify(PG)); } catch (e) {} }
+function pgSnap() { PG_HIST.push(JSON.stringify(PG.chords)); if (PG_HIST.length > 60) PG_HIST.shift(); }
+function pgDone() { pgStore(); if (PL.on) livePlayUpdate(); render(); }
+const pgPlaying = () => !!(PL.on && PL.scope && PL.scope.prog);
+const pgPlain = list => list.map(c => ({ r:c.r, q:c.q, b:c.b == null ? null : c.b, beats:c.beats || 4 }));
+const pgEnc = list => list.map(c => c.r + ':' + c.q + ':' + (c.beats || 4)).join('|');
+const pgDec = s => s.split('|').map(x => { const [r, q, beats] = x.split(':'); return { r:+r, q, b:null, beats:+beats }; });
+function pgSec() { const s = tempSec(pgPlain(PG.chords), 'verse', { meter:'4/4' }); s.id = 'prog'; s.key = pgKey(); return s; }
+/** Welche Rolle spielt der Akkord vor seinem Nachfolger? */
+function pgRole(c, next, key) {
+  const sc = scalePcs(key.root, key.mode), iv = QUALS[c.q].iv, isDom = x => QUALS[x.q].iv.includes(4) && QUALS[x.q].iv.includes(10);
+  const num = x => { const d = degreeOf(x.r, key); return d.acc + (QUALS[x.q].iv.includes(3) ? ROMAN[d.deg].toLowerCase() : ROMAN[d.deg]); };
+  if (chordPcs(c).every(p => sc.includes(p))) return { s:'dia', t:numeral(c, key) };
+  const d = next ? mod12(c.r - next.r) : -1;
+  if (isDom(c) && d === 7) return { s:'sec', t:'V/' + num(next) };
+  if (isDom(c) && d === 1) return { s:'tri', t:'♭II/' + num(next) };
+  if ((c.q === 'dim7' || c.q === 'dim') && d === 11) return { s:'dim', t:'vii°/' + num(next) };
+  if (next && iv.includes(3) && isDom(next) && mod12(next.r - c.r) === 5) return { s:'iiv', t:'ii–V' };
+  if (next && next.r === key.root) return { s:'alt', t:numeral(c, key) };
+  return { s:'bor', t:numeral(c, key) };
+}
+/** Schreibweise: ♭II, ♭III, ♭VI, ♭VII und Tritonus-Ersatz als B-Tonart, verminderte Hinführer mit Kreuz. */
+const PG_FLATKEYS = { major:[5, 10, 3, 8, 1], minor:[2, 7, 0, 5, 10] };
+function pgSpell(list, key, cyc) {
+  const sc = scalePcs(key.root, key.mode), flatKey = PG_FLATKEYS[MODES[key.mode].minor ? 'minor' : 'major'].includes(key.root);
+  list.forEach((c, i) => {
+    const next = list[i + 1] || (cyc ? list[0] : null);
+    if (NOTES[c.r].length === 1 || c.q === 'dim' || c.q === 'dim7') c.fl = false;
+    else if (flatKey || pgRole(c, next, key).s === 'tri') c.fl = true;
+    else c.fl = !sc.includes(c.r) && [1, 3, 8, 10].includes(mod12(c.r - key.root));
+  });
+  return list;
+}
+const pgSym = c => (c.fl ? FLAT_NOTES[c.r] : pcName(c.r)) + c.q;
+function pgWhy(r, next) {
+  const n = next ? pgSym(next) : '';
+  return { dia:'Gehört zur Tonart – hier bist du zu Hause.', sec:`Dominante von ${n}: zieht eine Quinte abwärts hinein.`, iiv:'Anlauf: erst ii, dann V, dann ankommen.', tri:`Rutscht einen Halbton abwärts nach ${n}.`, dim:`Schiebt sich einen Halbton hoch nach ${n}.`, bor:'Geliehene Farbe von außerhalb der Tonart.', alt:`Führt auf einem Umweg nach Hause zu ${n}.` }[r.s];
+}
+function pgLead(t, kind) {
+  const minor = QUALS[t.q].iv.includes(3);
+  if (kind === 'sec') return [{ r:mod12(t.r + 7), q:'7' }];
+  if (kind === 'iiv') return minor ? [{ r:mod12(t.r + 2), q:'m7b5', beats:2 }, { r:mod12(t.r + 7), q:'7b9', beats:2 }] : [{ r:mod12(t.r + 2), q:'m7', beats:2 }, { r:mod12(t.r + 7), q:'7', beats:2 }];
+  if (kind === 'tri') return [{ r:mod12(t.r + 1), q:'7' }];
+  return [{ r:mod12(t.r + 11), q:'dim7' }];
+}
+function pgBorrowed(key) {
+  const L = MODES[key.mode].minor ? [[0,'maj7'],[1,'maj7'],[2,'m7'],[5,'7'],[7,'7'],[9,'m7b5']] : [[1,'maj7'],[2,'m7b5'],[3,'maj7'],[5,'m7'],[7,'m7'],[8,'maj7'],[10,'7']];
+  return L.map(([o, q]) => ({ r:mod12(key.root + o), q }));
+}
+function pgHome(key) {
+  const L = [['V7', [[7,'7']]], ['♭II7', [[1,'7']]], ['♭VII7', [[10,'7']]], ['vii°7', [[11,'dim7']]], ['iv6', [[5,'m6']]], ['iiø', [[2,'m7b5']]], ['♭vi6', [[8,'m6']]], ['Backdoor', [[5,'m7',2],[10,'7',2]]], ['Tritonus-ii–V', [[8,'m7',2],[1,'7',2]]]];
+  return L.map(([l, t]) => [l, tmplChords(t, key.root)]);
+}
+/** Fügt nach dem ausgewählten Akkord ein (sonst am Ende) und wählt das Neue aus. */
+function pgInsert(list, at) {
+  pgSnap();
+  const U = pgU(), items = pgPlain(list).map(c => Object.assign({ id:uid() }, c));
+  const i = at != null ? at : (U.sel != null && PG.chords[U.sel] ? U.sel + 1 : PG.chords.length);
+  PG.chords.splice(i, 0, ...items);
+  U.sel = i + items.length - 1;
+  return items;
+}
+/** Setzt einen Hinführer vor den Akkord i; der Vorgänger gibt die Hälfte seiner Länge ab. Beim ersten Akkord landet er am Ende (Turnaround). */
+function pgLeadBefore(i, kind) {
+  const U = pgU(), n = PG.chords.length, t = PG.chords[i], lead = pgLead(t, kind), prev = PG.chords[(i - 1 + n) % n];
+  pgSnap();
+  let total = 2 * lead.length;
+  if (prev.beats >= 2 && (lead.length === 1 || prev.beats >= 4)) { prev.beats /= 2; total = prev.beats; }
+  const items = lead.map(c => ({ id:uid(), r:c.r, q:c.q, b:null, beats:Math.max(1, total / lead.length) }));
+  PG.chords.splice(i > 0 ? i : n, 0, ...items);
+  U.sel = i > 0 ? i + items.length : 0;
+  return items;
+}
+function pgHearSeq(list) {
+  if (PL.on) return;
+  const o = audio(), t0 = o.ctx.currentTime + 0.03; let prev = null;
+  list.forEach((c, i) => { const v = voiceChord(c, prev); prev = v; [...v.lh, ...v.rh].forEach((m, j) => playVoice(o, o.bus.preview, P().sound || 'ep', m, t0 + i * 0.5 + j * 0.012, list.length > 1 && i < list.length - 1 ? 0.6 : 1.3, 0.72)); });
+}
+function pgSongAdd(name, chords, key) {
+  const p = P(), s = newSection('verse', name, pgPlain(chords));
+  if (keyName(key) !== keyName(p.key)) s.key = { root:key.root, mode:key.mode };
+  p.sections.push(s); p.arrangement.push(s.id); selectSection(s.id);
+  if (PL.on) stopPlay(true);
+  S.ui.area = 'song'; S.ui.tab = 'song'; commit(); toast('„' + name + '“ ist jetzt ein Teil im Song');
+}
+let _pgSig = '', _pgCi = -1;
+function pgHead(i) {
+  const c = PG.chords[i]; if (!c) return '';
+  const key = pgKey(), next = PG.chords[(i + 1) % PG.chords.length], r = pgRole(c, next, key);
+  const v = voiceChord(c, null), mk = new Map(); [...v.lh, ...v.rh].forEach(m => mk.set(m, { color:noteColor(mod12(m), c), label:(c.fl ? FLAT_NOTES : NOTES)[mod12(m)] }));
+  const sig = c.id + chordKey(c), fresh = sig !== _pgSig; _pgSig = sig;
+  return `<div class="pg-head${fresh ? ' fresh' : ''}" style="--c:${pcColor(c.r)};--sc:${PG_COL[r.s]}"><span class="pg-role">${PG_NAME[r.s]} · ${esc(r.t)}</span>
+    <button class="pg-big" data-a="chordView" data-sym="${esc(chordSym(c))}" aria-label="Akkord ansehen">${chordHTML(c)}</button>
+    <div class="sub">${esc(pgWhy(r, next))}</div><div class="pianowrap mt">${pianoSVG(48, 83, mk)}</div></div>`;
+}
+/** Vom Sequencer aufgerufen: Klaviatur folgt dem klingenden Akkord. */
+function pgNow(ci) {
+  if (ci === _pgCi) return; _pgCi = ci;
+  const el = document.getElementById('pgHead'); if (el && PG.chords[ci]) el.innerHTML = pgHead(ci);
+}
+function pgEdit(i) {
+  const c = PG.chords[i], n = PG.chords.length, LEN = [[1,'¼'],[2,'½'],[4,'1 Takt'],[8,'2 Takte']];
+  return `<div class="row wrap mt"><button class="ib" data-a="pgMove" data-d="-1" aria-label="Nach links" ${i ? '' : 'disabled'}>${IC.chevL}</button><button class="ib" data-a="pgMove" data-d="1" aria-label="Nach rechts" ${i < n - 1 ? '' : 'disabled'}>${IC.chevR}</button>
+      <button class="ib ${collFind(c) ? 'on' : ''}" data-a="pgHeart" aria-label="Zur Sammlung">${IC.heart}</button><button class="ib" data-a="pgDel" aria-label="Entfernen">${IC.trash}</button>
+      <div class="seg sm" style="margin-left:auto">${LEN.map(([b, l]) => `<button class="${c.beats === b ? 'on' : ''}" data-a="pgLen" data-v="${b}">${l}</button>`).join('')}</div></div>
+    <div class="lbl">Hinführen zu ${chordHTML(c)}</div>
+    <div class="pg-leads">${PG_LEADS.map(([k, name]) => { const L = pgLead(c, k); pgSpell([...L, { r:c.r, q:c.q }], pgKey()); return `<button class="pg-leadbtn" style="--sc:${PG_COL[k]}" data-a="pgLeadIn" data-v="${k}"><i>${name}</i><b>${L.map(x => chordHTML(x)).join(' ')}</b></button>`; }).join('')}</div>
+    <div class="hint">Setzt den Akkord davor – er teilt sich den Takt mit dem Vorgänger.</div>`;
+}
+function pgStrip() {
+  const key = pgKey(), ch = PG.chords, sel = pgU().sel;
+  if (!ch.length) return `<div class="pg-empty"><b>Noch leer</b>Tippe unten einen Akkord an – er fliegt hier hoch und klingt sofort. Oder hol dir unter „Ideen“ einen Anfang.</div>`;
+  const bars = []; let cur = [], sum = 0;
+  ch.forEach((c, i) => { cur.push(i); sum += c.beats; if (sum >= 4) { bars.push([cur, sum]); cur = []; sum = 0; } });
+  if (cur.length) bars.push([cur, sum]);
+  return `<div class="pg-strip">${bars.map(([b, len]) => `<div class="pg-bar ${len > 4 ? 'w2' : ''} ${b.length > 2 ? 'many' : ''}">${b.map(i => {
+    const c = ch[i], r = pgRole(c, ch[(i + 1) % ch.length], key);
+    return `<button class="cchip pg-chip ${i === sel ? 'on' : ''} ${c.beats < 2 ? 'q1' : ''}" style="flex:${c.beats} 1 0;--c:${pcColor(c.r)};--sc:${PG_COL[r.s]}" data-a="pgSel" data-i="${i}" data-sec="prog" data-ci="${i}" data-flip="pg${c.id}" data-flip-in><i>${esc(r.t)}</i><b>${chordHTML(c)}</b></button>`;
+  }).join('')}</div>`).join('')}</div>`;
+}
+function pgPalette() {
+  const key = pgKey(), four = PG.four, kind = PG.lead, info = PG_LEADS.find(x => x[0] === kind) || PG_LEADS[0], tonic = diatonicChord(key, 0, 3);
+  const tile = (list, label) => `<button class="pg-tile" style="--c:${pcColor(list[list.length - 1].r)}" data-a="pgAdd" data-ch="${esc(pgEnc(list))}"><i>${esc(label)}</i>${pgSpell(list, key).map(c => `<b>${chordHTML(c)}</b>`).join('')}</button>`;
+  const cols = [0, 1, 2, 3, 4, 5, 6].map(d => {
+    const t = diatonicChord(key, d, four ? 4 : 3), lead = pgLead(t, info[0]);
+    pgSpell([...lead, t], key);
+    return `<div class="pg-col" style="--sc:${PG_COL[info[0]]}"><button class="pg-lead" data-a="pgAdd" data-ch="${esc(pgEnc(lead))}">${lead.map(c => `<b>${chordHTML(c)}</b>`).join('')}</button><span class="pg-arr" aria-hidden="true">↓</span>${tile([t], numeral(t, key))}</div>`;
+  }).join('');
+  return `<div class="card" data-flip="pgpal" data-flip-mode="move"><div class="ch">${hd('chord', 'yellow', 'Zuhause')}<div class="seg sm"><button class="${!four ? 'on' : ''}" data-a="pgFour" data-v="0">Dreiklang</button><button class="${four ? 'on' : ''}" data-a="pgFour" data-v="1">Vierklang</button></div></div>
+      <div class="sub">Unten die sieben Akkorde von ${esc(keyName(key))}. Darüber jeweils der Akkord, der dorthin führt.</div>
+      <div class="chipsrow hscroll mt" data-keep="pgkind" data-thumb="pgkind">${PG_LEADS.map(([k, name]) => `<button class="pill ${info[0] === k ? 'on' : ''}" data-a="pgKind" data-v="${k}"><i class="pgdot" style="background:${PG_COL[k]}"></i>${name}</button>`).join('')}</div>
+      <div class="hint">${info[2]}</div>
+      <div class="hscroll" data-keep="pgcols"><div class="pg-cols">${cols}</div></div></div>
+    <div class="card" data-flip="pgbor" data-flip-mode="move" style="--sc:${PG_COL.bor}"><span class="pg-role">Geliehene Farben</span><div class="sub mt">${MODES[key.mode].minor ? 'Aus dem gleichnamigen Dur und seinen Verwandten: plötzlich Licht.' : 'Aus dem gleichnamigen Moll: gleiche Heimat, dunklere Farbe.'} Danach einfach wieder nach Hause.</div>
+      <div class="pg-tiles">${pgBorrowed(key).map(c => tile([c], numeral(c, key))).join('')}</div></div>
+    <div class="card" data-flip="pghome" data-flip-mode="move" style="--sc:${PG_COL.alt}"><span class="pg-role">Zurück nach Hause</span><div class="sub mt">Alles hier führt zurück zu ${chordHTML(tonic)} – die normale Dominante und ihre Umwege.</div>
+      <div class="pg-tiles">${pgHome(key).map(([l, list]) => tile(list, l)).join('')}</div></div>`;
+}
+function pgBuild() {
+  const U = pgU(), key = pgKey(), n = PG.chords.length, playing = pgPlaying();
+  if (U.sel != null && !PG.chords[U.sel]) U.sel = null;
+  pgSpell(PG.chords, key, true);
+  const pos = playing ? playPos() : null, focus = playing && n ? Math.max(0, pos ? pos.ci : 0) : U.sel;
+  _pgCi = focus == null ? -1 : focus;
+  let h = pageTitle('', 'Progressionen', `Bau dir eine Akkordfolge in ${esc(keyName(key))}. Antippen fügt hinzu und klingt sofort.`);
+  h += `<div class="card" data-flip="pgstrip" data-flip-mode="move">${pgStrip()}${n ? `<div class="row wrap mt"><button class="pri" data-a="pgPlay">${playing ? IC.stop + ' Stopp' : IC.play + ' Loop'}</button><button data-a="pgToSong">${IC.layers} In den Song</button><button data-a="pgSaveAsk">${IC.heart} Sichern</button><button class="ib" style="margin-left:auto" data-a="pgClear" aria-label="Alles leeren">${IC.trash}</button></div>` : ''}</div>`;
+  if (focus != null && PG.chords[focus]) h += `<div class="card pg-now" data-flip="pgnow" data-flip-mode="move"><div id="pgHead">${pgHead(focus)}</div>${U.sel != null ? pgEdit(U.sel) : ''}</div>`;
+  return h + pgPalette();
+}
+function pgIdeas() {
+  const R = pgKey().root, mk = { root:R, mode:'major' };
+  return PG_IDEAS.map((g, gi) => `<div class="card" style="--sc:${PG_COL[g.s]}"><span class="pg-role">${g.n}</span><div class="sub mt">${g.d}</div>${g.ex.map((e, ei) => {
+    const chs = pgSpell(tmplChords(e[1], R), mk, true);
+    return `<div class="prog"><div class="pn">${esc(e[0])}</div><div class="pchips">${chs.map((c, i) => { const r = pgRole(c, chs[(i + 1) % chs.length], mk); return `<span class="pc" style="--c:${r.s === 'dia' ? pcColor(c.r) : PG_COL[r.s]}">${chordHTML(c)}</span>`; }).join('')}</div><div class="row"><button class="ib round" data-a="pgIdeaHear" data-g="${gi}" data-e="${ei}" aria-label="Anhören">${IC.play}</button><button data-a="pgIdeaLoad" data-g="${gi}" data-e="${ei}">${IC.plus} Zum Bauen laden</button></div></div>`;
+  }).join('')}</div>`).join('') + `<div class="hint center">Beispiele in ${esc(pcName(R))} Dur. Farbig markiert: die Akkorde, die nicht zur Tonart gehören.</div>`;
+}
+function pgSaved() {
+  if (!PG.saved.length) return `<div class="card"><div class="sub center">Noch nichts gesichert. Unter „Bauen“ auf „Sichern“ tippen – dann liegt die Folge hier.</div></div>`;
+  return PG.saved.map(s => `<div class="card"><div class="ch"><div class="h">${esc(s.name)}</div><span class="sub">${esc(keyName(s.key))}</span></div><div class="pchips mt">${pgSpell(s.chords, s.key, true).map(c => `<span class="pc" style="--c:${pcColor(c.r)}">${chordHTML(c)}</span>`).join('')}</div>
+    <div class="row wrap mt"><button class="ib round" data-a="pgSavedHear" data-id="${s.id}" aria-label="Anhören">${IC.play}</button><button data-a="pgSavedLoad" data-id="${s.id}">Öffnen</button><button data-a="pgSavedSong" data-id="${s.id}">${IC.layers} In den Song</button><button class="ib" style="margin-left:auto" data-a="pgSavedDel" data-id="${s.id}" aria-label="Löschen">${IC.trash}</button></div></div>`).join('');
+}
+function vProg() {
+  const t = pgU().tab;
+  if (t === 'ideas') return pageTitle('', 'Ideen', 'Sieben Wege zu spannenderen Akkordfolgen – anhören, laden, weiterbauen.') + pgIdeas();
+  if (t === 'saved') return pageTitle('', 'Meine Progressionen', 'Gesicherte Folgen – öffnen, anhören oder direkt in den Song legen.') + pgSaved();
+  return pgBuild();
+}
+function hdrProg() {
+  const k = pgKey(), p = P(), on = pgPlaying(), minor = MODES[k.mode].minor;
+  return `<header class="hdr prog"><div class="r1"><button class="ib" data-a="openNav" aria-label="Menü">${IC.menu}</button><div class="ptitle static">Progressionen</div>
+    <button class="ib flat" data-a="pgUndo" aria-label="Rückgängig" ${PG_HIST.length ? '' : 'disabled'}>${IC.undo}</button><button class="keychip" data-a="goArea" data-v="song"><span>${esc(p.name)}</span></button></div>
+  <div class="r2"><button class="playbtn ${on ? 'on' : ''}" data-a="pgPlay" aria-label="Loop abspielen"><i class="pring"></i>${on ? IC.stop : IC.play}</button>
+    <label class="rootsel" style="--c:${pcColor(k.root)}"><select data-a="pgRoot" aria-label="Grundton">${NOTES.map((n, i) => `<option value="${i}" ${i === k.root ? 'selected' : ''}>${n}</option>`).join('')}</select></label>
+    <div class="seg"><button class="${!minor ? 'on' : ''}" data-a="pgMode" data-v="major">Dur</button><button class="${minor ? 'on' : ''}" data-a="pgMode" data-v="minor">Moll</button></div>
+    <button class="bpm" data-a="openTempo" aria-label="Tempo"><b data-tick="bpm">${p.bpm}</b><span><em>BPM</em></span></button></div></header>`;
+}
+
 /* ===== MIDI-Keyboard ===== */
 const MIDI = { access:null, held:new Map() };
 function midiHudEl() {
@@ -5225,7 +5536,7 @@ function midiHudEl() {
   if (!el) {
     el = document.createElement('div');
     el.id = 'midiHud'; el.className = 'midihud';
-    el.innerHTML = `<div class="mh-top"><span class="mh-dot"></span><b class="mh-name"></b><span class="mh-sub"></span><button class="ib sm" data-a="midiHeartToggle" aria-label="Zur Sammlung">${IC.heart}</button></div><div class="mh-piano"></div>`;
+    el.innerHTML = `<div class="mh-top"><span class="mh-dot"></span><b class="mh-name"></b><span class="mh-sub"></span><button class="ib sm" data-a="midiAddProg" aria-label="In die Progression">${IC.plus}</button><button class="ib sm" data-a="midiHeartToggle" aria-label="Zur Sammlung">${IC.heart}</button></div><div class="mh-piano"></div>`;
     document.body.appendChild(el);
   }
   return el;
@@ -5246,7 +5557,7 @@ function midiRenderHud() {
   nameEl.innerHTML = top && top.c ? chordHTML(top.c) : esc(top ? top.name : notes.map(midiName).join(' '));
   subEl.textContent = top ? top.desc : '';
   el.classList.toggle('noheart', !(top && top.c));
-  if (top && top.c) { heartBtn.dataset.sym = chordSym(top.c); heartBtn.classList.toggle('on', !!collFind(top.c)); }
+  if (top && top.c) { heartBtn.dataset.sym = chordSym(top.c); heartBtn.classList.toggle('on', !!collFind(top.c)); el.querySelector('[data-a="midiAddProg"]').dataset.sym = chordSym(top.c); }
   const lo = Math.min(48, ...notes.map(n => n - mod12(n))), hi = Math.max(71, ...notes);
   const marks = new Map(notes.map(m => [m, { color: top && top.c ? noteColor(mod12(m), top.c) : pcColor(mod12(m)), label:pcName(m) }]));
   pianoEl.innerHTML = pianoSVG(lo, hi, marks);
@@ -5297,9 +5608,16 @@ function init() {
     if (e.key === 'Enter' && e.target.id === 'pickText') A.pickTyped();
     if (e.key === 'Enter' && e.target.id === 'lexQ') A.lexGo();
     if (e.key === 'Enter' && e.target.id === 'syncTok') A.syncConnect();
+    if (e.key === 'Enter' && e.target.id === 'pgName') A.pgSaveDo();
+    if (S.ui.area === 'prog' && !S.ui.sheet && pgU().tab === 'build' && !/INPUT|TEXTAREA|SELECT/.test(e.target.tagName) && !e.ctrlKey && !e.metaKey) {
+      const U = pgU(), n = PG.chords.length;
+      if (e.key === ' ') { e.preventDefault(); A.pgPlay(); return; }
+      if ((e.key === 'ArrowRight' || e.key === 'ArrowLeft') && n) { e.preventDefault(); const d = e.key === 'ArrowRight' ? 1 : -1; U.sel = U.sel == null ? (d > 0 ? 0 : n - 1) : Math.max(0, Math.min(n - 1, U.sel + d)); if (!PL.on) hearChord(PG.chords[U.sel]); render(); return; }
+      if ((e.key === 'Backspace' || e.key === 'Delete') && U.sel != null) { e.preventDefault(); A.pgDel(); return; }
+    }
     if (e.key === 'Enter' && e.target.id === 'srQ') { const a = document.querySelector('[data-src=ug]'); if (a && srState().q.trim()) a.click(); }
     if (e.key === 'Escape' && S.ui.sheet) closeSheet();
-    if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'z' && !/INPUT|TEXTAREA/.test(e.target.tagName)) { e.preventDefault(); (e.shiftKey ? A.redo : A.undo)(); }
+    if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'z' && !/INPUT|TEXTAREA/.test(e.target.tagName)) { e.preventDefault(); if (S.ui.area === 'prog') A.pgUndo(); else (e.shiftKey ? A.redo : A.undo)(); }
   });
   window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); window._installEvt = e; if (S.ui.sheet && S.ui.sheet.type === 'lib') render(); });
   document.addEventListener('visibilitychange', () => { if (document.hidden) saveNow(); });
