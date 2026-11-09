@@ -16,6 +16,7 @@
   "build": {
     "appId": "de.nils.akkordlabor",
     "productName": "Akkord-Labor",
+    "publish": null,
     "directories": {
       "output": "dist-electron"
     },
