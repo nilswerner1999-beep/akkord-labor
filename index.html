@@ -1029,6 +1029,74 @@ input[type=checkbox]:checked{background:var(--acc)}
 .midistat{font-size:11px;letter-spacing:.06em;text-transform:uppercase}
 @media (max-width:480px){.tabs .labbtn span{display:none}.tabs .labbtn{min-width:46px}}
 @media (max-width:700px){body::before{width:640px;height:450px;right:-270px;top:-190px}.card,.card.sec{padding:16px}}
+/* ===== Kinetik: Analyser-Canvas, Funken, Saiten, Metronom-Puls ===== */
+body::before{display:none}
+#fxCanvas,#fxTop{position:fixed;inset:0;width:100vw;height:100vh;pointer-events:none}
+#fxCanvas{z-index:-1}
+#fxTop{z-index:70}
+.cchip.ph,.pg-chip.ph{background:var(--cream)!important;color:#000!important;box-shadow:0 0 28px rgba(233,78,27,.65),inset 0 0 0 1px var(--acc)!important;transform:translateY(-2px) scale(1.03);transition:transform .08s var(--snap),box-shadow .15s ease-out!important}
+.live{box-shadow:0 -12px 40px rgba(233,78,27,.14);transition:box-shadow .2s ease-out}
+body.lit .live{box-shadow:0 -1px 0 var(--acc),0 -16px 55px rgba(233,78,27,.35)}
+.live .k{transition:fill .06s ease-out,transform .12s var(--snap);transform-box:fill-box;transform-origin:top center}
+.live .k.on{fill:var(--acc)!important;transform:scaleY(.975)}
+.lv-chord{transition:transform .18s var(--spring),text-shadow .2s}
+body.lit .lv-chord{text-shadow:0 0 42px rgba(233,78,27,.45)}
+.lv-line{position:relative;padding-bottom:14px}
+.lv-line::after{content:"";position:absolute;left:0;right:0;bottom:0;height:1px;background:var(--acc);transform-origin:left center}
+.lv-line.draw::after{animation:lvDraw .42s var(--snap) both}
+.lv-line.draw .lv-chord{animation:lvPop .34s var(--spring) both}
+@keyframes lvDraw{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+@keyframes lvPop{from{opacity:0;transform:translateY(16px) scale(.94)}to{opacity:1;transform:none}}
+@keyframes stringPluck{0%{transform:translateY(0);stroke:#e94e1b;stroke-width:2.6px}20%{transform:translateY(-2.2px)}40%{transform:translateY(2px)}60%{transform:translateY(-1.2px)}80%{transform:translateY(.8px)}100%{transform:translateY(0)}}
+@keyframes stringPluckV{0%{transform:translateX(0);stroke:#e94e1b;stroke-width:2.6px}20%{transform:translateX(-2.2px)}40%{transform:translateX(2px)}60%{transform:translateX(-1.2px)}80%{transform:translateX(.8px)}100%{transform:translateX(0)}}
+.string-vibrate{animation:stringPluck .45s cubic-bezier(.2,.9,.3,1)}
+.string-vibrate[data-sv]{animation-name:stringPluckV}
+.playbtn.on{background:var(--acc)!important;color:var(--cream)!important;box-shadow:0 0 28px rgba(233,78,27,.6)!important}
+.bpm.tick,.arrcard.tick{outline:1px solid var(--acc);outline-offset:-1px}
+.bpm.tick b{color:var(--acc)}
+@keyframes snapFlash{0%,38%{outline-color:#fff}100%{outline-color:rgba(255,255,255,0)}}
+.snap{outline:1px solid #fff;outline-offset:2px;animation:snapFlash .42s linear both}
+/* ===== Lernen ===== */
+.ln-keys{display:grid;grid-template-columns:repeat(12,1fr);gap:6px;margin-top:14px}
+.ln-k{flex-direction:column;align-items:stretch;justify-content:space-between;gap:7px;min-height:50px;padding:9px 8px 7px;background:none;box-shadow:inset 0 0 0 1px var(--line);font-family:var(--disp);font-weight:500;font-size:17px;text-align:left;min-width:0}
+.ln-k b{font-weight:500;white-space:nowrap}
+.ln-k small{font-size:10px;color:var(--tx3);font-family:var(--mono);letter-spacing:0}
+.ln-k.on{box-shadow:inset 0 0 0 1px var(--acc);color:var(--acc)}
+.ln-k u{display:block;height:1px;background:var(--line2);text-decoration:none}
+.ln-k s{display:block;height:1px;background:var(--acc)}
+.ln-task{margin-top:18px;padding-top:16px;border-top:1px solid var(--line)}
+.ln-task .lv-key em{font-family:var(--ital);font-style:italic;font-weight:400;font-size:.62em;color:var(--tx2);letter-spacing:0}
+.ln-task.hit .lv-key{color:var(--acc)}
+.ln-seq{display:flex;flex-wrap:wrap;gap:6px;margin-top:14px}
+.ln-seq i{font-style:normal;font-family:var(--mono);font-size:14px;min-width:40px;padding:8px;text-align:center;box-shadow:inset 0 0 0 1px var(--line);color:var(--tx2)}
+.ln-seq i.ok{background:var(--cream);color:#000;box-shadow:none}
+.ln-seq i.nx{box-shadow:inset 0 0 0 1px var(--acc);color:var(--acc)}
+.ln-gh{display:flex;align-items:baseline;gap:6px 14px;flex-wrap:wrap;margin-top:22px;padding-top:14px;border-top:1px solid var(--line)}
+.ln-gh b{font-family:var(--disp);font-weight:500;font-size:24px;letter-spacing:-.03em}
+.ln-gh span{font-family:var(--mono);font-size:11.5px;color:var(--tx2)}
+.ln-grid{grid-template-columns:repeat(auto-fill,minmax(150px,1fr))}
+.ln-it.done{box-shadow:inset 0 0 0 1px var(--line2)}
+.ln-it.done b{color:var(--cream)}
+.ln-it.on{box-shadow:inset 0 0 0 1px var(--acc)}
+.ln-info{display:grid;grid-template-columns:minmax(240px,330px) 1fr;gap:28px;align-items:center;margin-top:20px}
+.ln-circ{width:100%;max-width:330px;display:block;margin:0 auto}
+.ln-circ circle,.ln-circ line{fill:none;stroke:var(--line2);stroke-width:1}
+.ln-circ text{text-anchor:middle;dominant-baseline:central;fill:var(--tx);pointer-events:none}
+.ln-circ .mj{font-family:var(--disp);font-size:17px;font-weight:500}
+.ln-circ .mn{font-family:var(--ital);font-style:italic;font-size:13px;fill:var(--tx2)}
+.ln-circ .sg{font-family:var(--mono);font-size:8.5px;fill:var(--tx3)}
+.ln-circ g{cursor:pointer}
+.ln-circ g.on text{fill:var(--acc)}
+.ln-circ circle.hitc{stroke:none;fill:transparent;pointer-events:all}
+.ln-tips{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--line);border:1px solid var(--line);margin-top:12px}
+.ln-tip{background:var(--s1);padding:14px;display:flex;flex-direction:column;gap:4px}
+.ln-tip i{font-family:var(--mono);font-style:normal;font-size:11px;color:var(--acc)}
+.ln-tip b{font-family:var(--disp);font-weight:500;font-size:17px}
+.ln-tip span{font-size:13.5px;color:var(--tx2);line-height:1.45}
+.ln-tbl td{font-family:var(--mono);font-size:12.5px}
+.ln-tbl td:first-child{font-family:var(--font);font-size:14px}
+.live .lg.b{fill:#f5eddc}
+@media (max-width:760px){.ln-keys{grid-template-columns:repeat(6,1fr)}.ln-info{grid-template-columns:1fr}.ln-tips{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
@@ -2235,7 +2303,12 @@ function makeGraph(ctx) {
   o.out = ctx.createGain(); o.out.gain.value = 0.85;
   const comp = ctx.createDynamicsCompressor();
   comp.threshold.value = -16; comp.knee.value = 12; comp.ratio.value = 3.5; comp.attack.value = 0.004; comp.release.value = 0.2;
-  o.out.connect(comp); comp.connect(ctx.destination);
+  if (ctx.createAnalyser && !(window.OfflineAudioContext && ctx instanceof OfflineAudioContext)) {
+    o.analyser = ctx.createAnalyser(); o.analyser.fftSize = 128; o.analyser.smoothingTimeConstant = 0.82;
+    o.freqData = new Uint8Array(o.analyser.frequencyBinCount);
+    o.out.connect(o.analyser); o.analyser.connect(comp);
+  } else o.out.connect(comp);
+  comp.connect(ctx.destination);
   o.rev = ctx.createConvolver(); o.rev.buffer = makeImpulse(ctx, 2.4, 2.8);
   const ret = ctx.createGain(); ret.gain.value = 0.8; o.rev.connect(ret); ret.connect(o.out);
   o.noise = makeNoise(ctx);
@@ -2414,7 +2487,16 @@ function vSample(o, dest, inst, m, t, dur, vel) {
   g.gain.setValueAtTime(pk, t); g.gain.setTargetAtTime(0.0001, end, rel / 3);
   src.connect(g); g.connect(dest); src.start(t); src.stop(end + rel * 2.5);
 }
+/** Sichtbarer Puls zum Klick: BPM-Feld und Ablauf-Karte blitzen 90 ms */
+function metroFlash(delay) {
+  if (!MO.on) return;
+  setTimeout(() => {
+    const els = document.querySelectorAll('.bpm, .arrcard'); els.forEach(el => el.classList.add('tick'));
+    setTimeout(() => els.forEach(el => el.classList.remove('tick')), 90);
+  }, Math.max(0, delay * 1000));
+}
 function vClick(o, dest, t, acc, sub) {
+  if (o === AU.o && !sub) metroFlash(t - o.ctx.currentTime);
   const c = o.ctx, os = c.createOscillator(), g = c.createGain();
   os.frequency.value = acc ? 1760 : 1320; g.gain.setValueAtTime(acc ? 0.5 : sub ? 0.14 : 0.3, t); g.gain.exponentialRampToValueAtTime(0.0001, t + 0.04);
   os.connect(g); g.connect(dest); os.start(t); os.stop(t + 0.05);
@@ -2549,10 +2631,22 @@ function guitarNotes(c) {
   const st = ST(), vs = voicingsFor(c, st.tuning, st.capo), v = vs[0];
   if (!v) return null;
   const open = tuningOpen(st.tuning, st.capo);
-  return v.frets.map((f, i) => f >= 0 ? open[i] + f : null).filter(x => x != null);
+  const ns = v.frets.map((f, i) => f >= 0 ? open[i] + f : null).filter(x => x != null);
+  ns.gs = v.frets.map((f, i) => f >= 0 ? i : null).filter(x => x != null);   // Saite zu jedem Ton
+  return ns;
+}
+/** Saite si (0 = tiefste) schwingt 450 ms in allen sichtbaren Griffbildern */
+function pluckString(si, delay) {
+  if (!MO.on) return;
+  const go = () => document.querySelectorAll(`line[data-str="${si}"]`).forEach(l => {
+    l.classList.remove('string-vibrate'); void l.getBoundingClientRect(); l.classList.add('string-vibrate');
+    clearTimeout(l._sv); l._sv = setTimeout(() => l.classList.remove('string-vibrate'), 460);
+  });
+  if (delay > 0.012) setTimeout(go, delay * 1000); else go();
 }
 function guitarEvents(ev, notes, b, d, style) {
-  const add = (bb, dd, m, vel) => ev.push({ b:bb, d:dd, k:'guitar', m, v:vel, tr:'chords' });
+  const sOf = new Map(notes.map((m, i) => [m, notes.gs ? notes.gs[i] : null]));
+  const add = (bb, dd, m, vel) => ev.push({ b:bb, d:dd, k:'guitar', m, v:vel, tr:'chords', gs:sOf.get(m) });
   const strum = (bb, dd, down, vel, sp) => { const ns = down ? notes : notes.slice().reverse(); ns.forEach((m, i) => add(bb + i * (sp || 0.045), dd - i * (sp || 0.045), m, vel * (down ? 1 : 0.8))); };
   if (style === 'arp') { const seq = notes.concat(notes.slice(1, -1).reverse()); for (let i = 0; i < d * 2; i++) add(b + i / 2, 1.2, seq[i % seq.length], 0.7); return; }
   if (style === 'quarters') { for (let i = 0; i < d; i++) strum(b + i, 0.95, true, i % 2 ? 0.62 : 0.78); return; }
@@ -2636,7 +2730,10 @@ function fireEvent(o, e, t, spb, proj) {
     let v = e.v, tt = t;
     if (e.h) { v *= 0.88 + Math.random() * 0.24; tt += (Math.random() - 0.5) * 0.012; }
     vDrum(o, dest, e.n, Math.max(tt, o.ctx.currentTime), Math.min(1, v));
-  } else playVoice(o, dest, e.k, e.m, t, Math.max(0.05, e.d * spb), e.v);
+  } else {
+    playVoice(o, dest, e.k, e.m, t, Math.max(0.05, e.d * spb), e.v);
+    if (e.gs != null && o === AU.o) pluckString(e.gs, t - o.ctx.currentTime);
+  }
 }
 
 /* ---- Sequencer ---- */
@@ -2722,15 +2819,20 @@ function playPos() {
 let _ph = [];
 function clearPlayhead() { _ph.forEach(el => el.classList.remove('ph')); _ph = []; document.querySelectorAll('.playbtn').forEach(b => b.style.removeProperty('--p')); const ph = document.getElementById('mmph'); if (ph) ph.style.opacity = 0; }
 let _lastProg = -1;
-let _lastPhKey = '';
+let _lastPhKey = '', _lastPhChord = '';
 function uiLoop() {
-  if (!PL.on) return;
+  if (!PL.on) { _lastPhChord = ''; return; }
   const p = playPos();
   if (p) {
     const k = p.secId + ':' + p.ci + ':' + p.step;
     if (k !== _lastPhKey) {
       _lastPhKey = k; clearPlayhead();
       document.querySelectorAll(`[data-sec="${p.secId}"][data-ci="${p.ci}"]`).forEach(el => { el.classList.add('ph'); _ph.push(el); });
+      const ck = p.secId + ':' + p.ci + ':' + (PL.loopN || 0);
+      if (ck !== _lastPhChord) {
+        _lastPhChord = ck;
+        _ph.forEach(el => { if (!el.matches('.cchip, .pg-chip')) return; const r = el.getBoundingClientRect(); if (r.width && r.bottom > 0 && r.top < innerHeight) spawnSparks(r.left + r.width / 2, r.top + r.height / 2, 12, true); });
+      }
       document.querySelectorAll(`[data-psec="${p.secId}"]`).forEach(g => {
         const col = p.step % (+g.dataset.plen || 16);
         g.querySelectorAll(`[data-col="${col}"]`).forEach(el => { el.classList.add('ph'); _ph.push(el); });
@@ -3216,7 +3318,7 @@ function chordDiagramSVG(frets, open, c) {
     const y = TOP + r * FH, nut = r === 0 && start === 1;
     s += `<line x1="${SX}" y1="${y}" x2="${SX + SP * 5}" y2="${y}" stroke="${nut ? '#e9ecef' : '#4a515c'}" stroke-width="${nut ? 5 : 1.4}"/>`;
   }
-  for (let i = 0; i < 6; i++) { const x = SX + i * SP; s += `<line x1="${x}" y1="${TOP}" x2="${x}" y2="${TOP + rows * FH}" stroke="#8a919c" stroke-width="${0.9 + (5 - i) * 0.25}"/>`; }
+  for (let i = 0; i < 6; i++) { const x = SX + i * SP; s += `<line x1="${x}" y1="${TOP}" x2="${x}" y2="${TOP + rows * FH}" stroke="#8a919c" stroke-width="${0.9 + (5 - i) * 0.25}" data-str="${i}" data-sv="1"/>`; }
   if (start > 1) s += `<text x="${SX - 10}" y="${TOP + FH * 0.66}" class="dfr">${start}</text>`;
   // Barré
   if (fv.length >= 4) {
@@ -3253,7 +3355,7 @@ function fretboardSVG(open, marks, opts) {
   }
   for (let si = 0; si < 6; si++) {
     const y = TOP + (5 - si) * SH;
-    s += `<line x1="${L}" y1="${y}" x2="${L + frets * FW}" y2="${y}" stroke="#9aa1ab" stroke-width="${0.8 + si * 0.3}"/>`;
+    s += `<line x1="${L}" y1="${y}" x2="${L + frets * FW}" y2="${y}" stroke="#9aa1ab" stroke-width="${0.8 + si * 0.3}" data-str="${si}"/>`;
     s += `<text x="10" y="${y + 4}" class="fbs">${pcName(open[si])}</text>`;
   }
   if (opts.click) for (let si = 0; si < 6; si++) for (let f = 0; f <= frets; f++) {
@@ -3702,7 +3804,7 @@ function lvStart(m, vel) {
   try {
     const o = audio(), ctx = o.ctx, t = ctx.currentTime, list = SB.piano;
     lvStop(m, 0.02);
-    if (!list || !list.length) { playVoice(o, o.bus.preview, 'ep', m, t + 0.002, 1.6, Math.max(0.35, vel)); return; }
+    if (!list || !list.length) { playVoice(o, o.bus.preview, 'ep', m, t + 0.002, 1.6, Math.max(0.35, vel)); lvSpark(m, vel); return; }
     let best = list[0]; for (const x of list) if (Math.abs(x.m - m) < Math.abs(best.m - m)) best = x;
     const src = ctx.createBufferSource(); src.buffer = best.buf; src.playbackRate.value = Math.pow(2, (m - best.m) / 12);
     const lp = ctx.createBiquadFilter(); lp.type = 'lowpass'; lp.Q.value = 0.4; lp.frequency.value = 700 + 11000 * Math.pow(vel, 1.6);
@@ -3711,6 +3813,12 @@ function lvStart(m, vel) {
     const v = { src, g }; LV.voices.set(m, v);
     src.onended = () => { if (LV.voices.get(m) === v) LV.voices.delete(m); };
   } catch (e) {}
+  lvSpark(m, vel);
+}
+function lvSpark(m, vel, burst) {
+  const kp = LV.pos[m], box = document.getElementById('lvKeys'); if (!kp || !box || S.ui.area !== 'lab') return;
+  const r = box.getBoundingClientRect(); if (!r.height) return;
+  spawnSparks(r.left + kp.x, r.top + 2, Math.round(6 + vel * 12), burst);
 }
 function lvStop(m, rel) {
   const v = LV.voices.get(m); if (!v) return; LV.voices.delete(m);
@@ -3839,6 +3947,13 @@ function lvGhost(rh, lh, ms) {
 }
 function lvGhostSync() {
   if (LV.ghostT) return;
+  if (LV.mode === 'learn') {
+    const it = lnItem();
+    if (!it) { LV.ghost = []; LV.ghostB = []; }
+    else if (it.kind === 'ch') { LV.ghost = it.notes; LV.ghostB = []; }
+    else { const nx = it.notes[Math.min(LNS.si, it.notes.length - 1)]; LV.ghost = [nx]; LV.ghostB = it.notes.filter(m => m !== nx); }
+    return;
+  }
   if (LV.mode === 'prac') { const st = lvPr().steps[LV.pr.i]; LV.ghost = st.v.rh; LV.ghostB = st.v.lh; } else { LV.ghost = []; LV.ghostB = []; }
 }
 /** Akkord antippen: anhören, anzeigen, Tasten kurz einblenden */
@@ -3851,6 +3966,7 @@ function lvTap(c, notes) {
 }
 /** Nach jeder Taste (MIDI, Maus, Computertastatur) */
 function lvChanged(type) {
+  if (LV.mode === 'learn') lnCheck(type);
   const notes = lvNotes();
   if (type === 'on' && LV.ghostT) { clearTimeout(LV.ghostT); LV.ghostT = 0; }
   const a = LV.cur = lvAnalyse(notes);
@@ -3907,6 +4023,7 @@ function lvModeHtml() {
       <div class="lv-steps">${chips}</div>
       ${ideas.length ? `<div class="lbl">Probier als Nächstes</div><div class="lv-steps">${ideas.map(x => `<button class="lv-st ${x.spice ? 'out' : ''}" data-a="lvIdea" data-sym="${esc(chordSym(x.c))}"><b>${chordHTML(x.c)}</b><i>${esc(x.why)}</i></button>`).join('')}</div><div class="hint">Antippen spielt den Akkord vor und zeigt ihn kurz auf den Tasten.</div>` : ''}` + btns;
   }
+  if (LV.mode === 'learn') return lnHtml();
   if (LV.mode !== 'prac') return '';
   const P = lvPr(), st = P.steps[LV.pr.i], c = st.c;
   return `<div class="ch"><div class="lv-lbl">Nachspielen</div><label class="selwrap"><select data-a="lvSrc" aria-label="Was üben">${P.all.map(x => `<option value="${esc(x.id)}" ${x.id === P.src.id ? 'selected' : ''}>${esc(x.name)}</option>`).join('')}</select></label></div>
@@ -3916,11 +4033,175 @@ function lvModeHtml() {
 }
 function vPlay() {
   const key = LK(), H = LV.html = {}, r = (id, html) => (H[id] = html);
-  return `<div class="seg wide4 toolseg">${[['free', 'Frei spielen'], ['rec', 'Spielwiese'], ['prac', 'Nachspielen']].map(([v, l]) => `<button class="${LV.mode === v ? 'on' : ''}" data-a="lvMode" data-v="${v}">${l}</button>`).join('')}</div>
+  return `<div class="seg wide4 toolseg">${[['free', 'Frei spielen'], ['rec', 'Spielwiese'], ['prac', 'Nachspielen'], ['learn', 'Lernen']].map(([v, l]) => `<button class="${LV.mode === v ? 'on' : ''}" data-a="lvMode" data-v="${v}">${l}</button>`).join('')}</div>
     ${LV.mode !== 'free' ? `<div class="card" id="lvMode">${r('lvMode', lvModeHtml())}</div>` : ''}
     <div class="lv-grid"><div class="card lv-now" id="lvNow">${r('lvNow', lvNowHtml())}</div>
       <div class="lv-side"><div class="card"><div class="lv-lbl">Stufen in ${esc(keyName(key))}</div><div class="lv-degs" id="lvDeg">${r('lvDeg', lvDegHtml())}</div></div>
         <div class="card"><div class="lv-lbl">Umkehrungen</div><div class="lv-invs" id="lvInv">${r('lvInv', lvInvHtml())}</div></div></div></div>`;
+}
+/* ===== Lernen: jede Tonart mit allen Akkorden samt Umkehrungen und allen Tonleitern – zeigen, hören, nachspielen ===== */
+const LN_LET = 'CDEFGAB', LN_NAT = [0, 2, 4, 5, 7, 9, 11];
+const LN_ROOT = [['C','C'], ['D♭','C♯'], ['D','D'], ['E♭','E♭'], ['E','E'], ['F','F'], ['F♯','F♯'], ['G','G'], ['A♭','G♯'], ['A','A'], ['B♭','B♭'], ['B','B']];   // Schreibweise für Dur / für Moll
+const LN_INV = ['Grundstellung', '1. Umkehrung', '2. Umkehrung', '3. Umkehrung'];
+const LN_CH = [
+  { q:'',     sym:'',     n:'Dur',                    st:'1 – 3 – 5',        f:'4 + 3',     deg:[0,2,4],   min:0 },
+  { q:'m',    sym:'m',    n:'Moll',                   st:'1 – ♭3 – 5',       f:'3 + 4',     deg:[0,2,4],   min:1 },
+  { q:'sus2', sym:'sus2', n:'sus2',                   st:'1 – 2 – 5',        f:'2 + 5',     deg:[0,1,4],   min:0, one:true },
+  { q:'sus4', sym:'sus4', n:'sus4',                   st:'1 – 4 – 5',        f:'5 + 2',     deg:[0,3,4],   min:0, one:true },
+  { q:'maj7', sym:'maj7', n:'Major 7',                st:'1 – 3 – 5 – 7',    f:'4 + 3 + 4', deg:[0,2,4,6], min:0 },
+  { q:'m7',   sym:'m7',   n:'Moll 7',                 st:'1 – ♭3 – 5 – ♭7',  f:'3 + 4 + 3', deg:[0,2,4,6], min:1 },
+  { q:'7',    sym:'7',    n:'Dominant 7',             st:'1 – 3 – 5 – ♭7',   f:'4 + 3 + 3', deg:[0,2,4,6], min:0 },
+  { q:'m7b5', sym:'m7♭5', n:'Halbvermindert',         st:'1 – ♭3 – ♭5 – ♭7', f:'3 + 3 + 4', deg:[0,2,4,6], min:1 },
+  { q:'dim7', sym:'°7',   n:'Vermindert 7',           st:'1 – ♭3 – ♭5 – 6',  f:'3 + 3 + 3', deg:[0,2,4,6], alt:[0,2,4,5], min:1 },
+];
+const LN_SC = [
+  { id:'maj',  n:'Dur',                      iv:[0,2,4,5,7,9,11], deg:[0,1,2,3,4,5,6], st:'1 2 3 4 5 6 7',       f:'G G H G G G H',   min:0 },
+  { id:'min',  n:'Natürliches Moll',         iv:[0,2,3,5,7,8,10], deg:[0,1,2,3,4,5,6], st:'1 2 ♭3 4 5 ♭6 ♭7',    f:'G H G G H G G',   min:1 },
+  { id:'harm', n:'Harmonisches Moll',        iv:[0,2,3,5,7,8,11], deg:[0,1,2,3,4,5,6], st:'1 2 ♭3 4 5 ♭6 7',     f:'G H G G H 1½ H',  min:1 },
+  { id:'mel',  n:'Melodisches Moll aufwärts', iv:[0,2,3,5,7,9,11], deg:[0,1,2,3,4,5,6], st:'1 2 ♭3 4 5 6 7',     f:'G H G G G G H',   min:1 },
+  { id:'meld', n:'Melodisches Moll abwärts', iv:[0,2,3,5,7,8,10], deg:[0,1,2,3,4,5,6], st:'8 ♭7 ♭6 5 4 ♭3 2 1',  f:'wie natürliches Moll', min:1, down:true },
+  { id:'pmaj', n:'Dur-Pentatonik',           iv:[0,2,4,7,9],      deg:[0,1,2,4,5],     st:'1 2 3 5 6',           f:'G G 1½ G 1½',     min:0 },
+  { id:'pmin', n:'Moll-Pentatonik',          iv:[0,3,5,7,10],     deg:[0,2,3,4,6],     st:'1 ♭3 4 5 ♭7',         f:'1½ G G 1½ G',     min:1 },
+  { id:'bmaj', n:'Dur-Blues',                iv:[0,2,3,4,7,9],    deg:[0,1,2,2,4,5],   st:'1 2 ♭3 3 5 6',        f:'G H H 1½ G 1½',   min:0 },
+  { id:'bmin', n:'Moll-Blues',               iv:[0,3,5,6,7,10],   deg:[0,2,3,4,4,6],   st:'1 ♭3 4 ♭5 5 ♭7',      f:'1½ G H H 1½ G',   min:1 },
+];
+const LN_TOTAL = LN_CH.reduce((a, t) => a + (t.one ? 1 : QUALS[t.q].iv.length), 0) + LN_SC.length;
+const LN_TIPS = [
+  ['Ankommen', 'Zwei Minuten reichen: Schultern lockern, durchatmen, dann eine einfache Tonleiter oder ein Lieblings-Riff. Erst danach das Neue.'],
+  ['Langsam gewinnt', 'Spiel so langsam, dass es fehlerfrei klappt. Tempo kommt von allein, saubere Bewegungen nicht.'],
+  ['Kurz, aber täglich', '10 bis 15 Minuten jeden Tag bringen mehr als eine lange Sitzung pro Woche.'],
+  ['Eine Tonart nach der anderen', 'Geh den Quintenzirkel entlang: C, G, D, A … Von Schritt zu Schritt ändert sich nur ein einziger Ton.'],
+  ['Umkehrungen verbinden', 'Wechsle zwischen zwei Akkorden über die nächstliegende Umkehrung, statt mit der Hand zu springen. „Nachspielen“ zeigt dir den kürzesten Weg.'],
+  ['Pausen machen', 'Wird die Hand fest oder steigt der Frust: aufstehen, bewegen, ausschütteln. Lockere Hände lernen schneller.'],
+  ['Lesen üben', 'Notenlesen ist ein eigener Muskel. Wenn du es können willst, lies täglich ein paar Takte, auch ganz leichte.'],
+  ['Zuhören', 'Hör deinen Lieblingskünstlern genau zu und such dir ihre Akkorde heraus. Die „Spielwiese“ sagt dir, in welcher Tonart du landest.'],
+  ['Mit Freude aufhören', 'Beende jede Einheit mit etwas, das du gern spielst. Dann setzt du dich morgen wieder hin.'],
+];
+const LN_KEY = 'akkordlabor.learn.v1';
+const LN = (() => {
+  let d = {}; try { d = JSON.parse(localStorage.getItem(LN_KEY)) || {}; } catch (e) {}
+  return { root: d.root >= 0 && d.root < 12 ? d.root | 0 : 0, tab: ['ch', 'sc', 'info'].includes(d.tab) ? d.tab : 'ch', sel: null, done: d.done && typeof d.done === 'object' ? d.done : {} };
+})();
+const LNS = { armed:true, si:0, flash:'', prev:new Set(), miss:false, ft:0 };
+function lnSave() { try { localStorage.setItem(LN_KEY, JSON.stringify({ root:LN.root, tab:LN.tab, done:LN.done })); } catch (e) {} }
+/** Töne nach Notenbuchstaben benennen (F♯-Dur hat ein E♯, kein F) */
+function lnSpell(name, r, iv, deg) {
+  const li = LN_LET.indexOf(name[0]);
+  return iv.map((s, k) => { const L = (li + deg[k]) % 7; let d = mod12(r + s - LN_NAT[L]); if (d > 6) d -= 12; return LN_LET[L] + (d > 0 ? '♯'.repeat(d) : '♭'.repeat(-d)); });
+}
+const lnBase = r => r <= 4 ? 60 + r : 48 + r;
+function lnChords(r) {
+  const base = lnBase(r), out = [];
+  LN_CH.forEach(t => {
+    const name = LN_ROOT[r][t.min], iv = QUALS[t.q].iv;
+    let nm = lnSpell(name, r, iv, t.deg);
+    if (t.alt) { const b = lnSpell(name, r, iv, t.alt); if (b.join('').length < nm.join('').length) nm = b; }
+    for (let k = 0; k < (t.one ? 1 : iv.length); k++) {
+      const ord = iv.map((x, j) => ({ m: base + x + (j < k ? 12 : 0), n: nm[j] })).sort((a, b) => a.m - b.m);
+      out.push({ kind:'ch', id:`c${r}.${t.q}.${k}`, t, k, title:name + t.sym, notes:ord.map(x => x.m), names:ord.map(x => x.n) });
+    }
+  });
+  return out;
+}
+function lnScales(r) {
+  const base = lnBase(r);
+  return LN_SC.map(sc => {
+    const name = LN_ROOT[r][sc.min], nm = lnSpell(name, r, sc.iv, sc.deg);
+    let notes = sc.iv.map(x => base + x).concat(base + 12), names = nm.concat(nm[0]);
+    if (sc.down) { notes.reverse(); names.reverse(); }
+    return { kind:'sc', id:`s${r}.${sc.id}`, s:sc, title:name + ' ' + sc.n, notes, names };
+  });
+}
+const lnItems = () => LN.tab === 'sc' ? lnScales(LN.root) : LN.tab === 'ch' ? lnChords(LN.root) : [];
+function lnItem() { const L = lnItems(); return L.find(x => x.id === LN.sel) || L.find(x => !LN.done[x.id]) || L[0] || null; }
+function lnCounts() { const n = {}; Object.keys(LN.done).forEach(k => { const r = parseInt(k.slice(1), 10); n[r] = (n[r] || 0) + 1; }); return n; }
+function lnPick(id) { LN.sel = id; LNS.si = 0; LNS.armed = !lvNotes().length; LNS.miss = false; LNS.flash = ''; clearTimeout(LNS.ft); lnSave(); lvRefresh(); }
+function lnHearIt() {
+  const it = lnItem(); if (!it) return;
+  if (it.kind === 'ch') { hearNotes(it.notes, 'piano', 1.4); return; }
+  const o = audio(), t = o.ctx.currentTime + 0.03; it.notes.forEach((m, i) => playVoice(o, o.bus.preview, 'piano', m, t + i * 0.26, 0.5, 0.75));
+}
+/** Nach jeder Taste: stimmt der Griff bzw. der nächste Ton der Tonleiter? */
+function lnCheck(type) {
+  const notes = lvNotes(), prev = LNS.prev; LNS.prev = new Set(notes);
+  const it = lnItem(); if (!it || LNS.flash) return;
+  if (it.kind === 'ch') {
+    if (type === 'off') { if (!notes.length) LNS.armed = true; return; }
+    if (!LNS.armed || !notes.length) return;
+    const pcs = new Set(notes.map(mod12)), need = it.notes.map(mod12);
+    if (pcs.size !== need.length || !need.every(x => pcs.has(x)) || mod12(notes[0]) !== need[0]) return;
+    lnHit(it); return;
+  }
+  if (type !== 'on') return;
+  const fresh = notes.filter(m => !prev.has(m)); if (!fresh.length) return;
+  fresh.forEach(m => { if (LNS.si < it.notes.length && mod12(m) === mod12(it.notes[LNS.si])) { LNS.si++; LNS.miss = false; } else LNS.miss = true; });
+  // angeklickte Tasten klingen nicht weiter, sonst liegt bald die ganze Leiter
+  [...LV.latch].forEach(m => { if (!fresh.includes(m)) { LV.latch.delete(m); lvStop(m, 0.12); } });
+  LNS.prev = new Set(lvNotes());
+  if (LNS.si >= it.notes.length) lnHit(it);
+}
+function lnHit(it) {
+  LN.done[it.id] = 1; lnSave(); LNS.flash = it.id; LNS.armed = false; LNS.miss = false; hap(12);
+  it.notes.forEach(m => lvSpark(m, 0.4, true));
+  clearTimeout(LNS.ft);
+  LNS.ft = setTimeout(() => {
+    LNS.flash = ''; LNS.si = 0;
+    if (LV.mode !== 'learn') return;
+    if (LV.latch.size) { LV.latch.forEach(m => lvStop(m, 0.25)); LV.latch.clear(); }
+    const L = lnItems(), i = L.findIndex(x => x.id === it.id);
+    if (i >= 0) { let nx = null; for (let j = 1; j <= L.length && !nx; j++) { const x = L[(i + j) % L.length]; if (!LN.done[x.id]) nx = x; } LN.sel = nx ? nx.id : it.id; }
+    lvChanged('off');
+  }, 750);
+}
+function lnMini(it) {
+  const lo = Math.min(...it.notes), hi = Math.max(...it.notes), from = 12 * Math.floor(lo / 12), to = Math.max(from + 23, 12 * Math.ceil((hi + 1) / 12) - 1);
+  return pianoSVG(from, to, new Map(it.notes.map(m => [m, { color: mod12(m) === LN.root ? '#e94e1b' : '#f4a688' }])));
+}
+function lnCircle() {
+  const C = 170, ord = [0, 7, 2, 9, 4, 11, 6, 1, 8, 3, 10, 5], sig = ['0', '1♯', '2♯', '3♯', '4♯', '5♯', '6♯', '5♭', '4♭', '3♭', '2♭', '1♭'];
+  const at = (rad, a) => [(C + rad * Math.cos(a)).toFixed(1), (C + rad * Math.sin(a)).toFixed(1)];
+  let s = `<svg class="ln-circ" viewBox="0 0 340 340" role="img" aria-label="Quintenzirkel"><circle cx="${C}" cy="${C}" r="158"/><circle cx="${C}" cy="${C}" r="104"/><circle cx="${C}" cy="${C}" r="62"/>`;
+  ord.forEach((pc, i) => {
+    const a = (i * 30 - 90) * Math.PI / 180, a0 = a - Math.PI / 12, [x1, y1] = at(62, a0), [x2, y2] = at(158, a0), mn = mod12(pc + 9);
+    const [mx, my] = at(137, a), [sx, sy] = at(116, a), [nx, ny] = at(83, a);
+    s += `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}"/>`;
+    s += `<g class="${pc === LN.root ? 'on' : ''}" data-a="lnRoot" data-r="${pc}"><circle class="hitc" cx="${at(128, a)[0]}" cy="${at(128, a)[1]}" r="24"/><text class="mj" x="${mx}" y="${my}">${LN_ROOT[pc][0]}</text><text class="sg" x="${sx}" y="${sy}">${sig[i]}</text></g>`;
+    s += `<g class="${mn === LN.root ? 'on' : ''}" data-a="lnRoot" data-r="${mn}"><circle class="hitc" cx="${nx}" cy="${ny}" r="19"/><text class="mn" x="${nx}" y="${ny}">${LN_ROOT[mn][1]}m</text></g>`;
+  });
+  return s + '</svg>';
+}
+function lnInfoHtml() {
+  const r = LN.root, ch = lnChords(r).filter(x => x.k === 0), sc = lnScales(r);
+  return `<div class="ln-info">${lnCircle()}<div><div class="lv-lbl">Quintenzirkel</div>
+      <div class="lv-feel">Außen stehen die Dur-Tonarten mit der Zahl ihrer Vorzeichen, innen die parallele Molltonart: gleiche Töne, anderer Grundton. Im Uhrzeigersinn liegt jede Tonart eine Quinte höher und bekommt ein ♯ dazu (oder verliert ein ♭), gegen den Uhrzeigersinn umgekehrt. Nachbarn teilen sich sechs von sieben Tönen – darum klingen Wechsel dorthin so selbstverständlich.</div>
+      <div class="hint">Tonart antippen, um sie zum Lernen auszuwählen.</div></div></div>
+    <div class="ln-gh"><b>Akkorde bauen</b><span>Abstände in Halbtönen, vom Grundton aus gestapelt</span></div>
+    <div class="lv-feel">Dur ist Grundton, 4 Halbtöne hoch, dann noch 3. Moll dreht es um: erst 3, dann 4. Alle anderen Akkorde sind Varianten davon.</div>
+    <div class="hscroll"><table class="tbl ln-tbl"><tr><th>Akkord</th><th>Stufen</th><th>Halbtöne</th><th>In dieser Tonart</th></tr>${ch.map(x => `<tr><td>${x.t.n}</td><td>${x.t.st}</td><td>${x.t.f}</td><td>${x.title}: ${x.names.join(' ')}</td></tr>`).join('')}</table></div>
+    <div class="ln-gh"><b>Tonleitern bauen</b><span>G = Ganzton (2 Halbtöne) · H = Halbton · 1½ = 3 Halbtöne</span></div>
+    <div class="hscroll"><table class="tbl ln-tbl"><tr><th>Tonleiter</th><th>Stufen</th><th>Schritte</th><th>In dieser Tonart</th></tr>${sc.map(x => `<tr><td>${x.s.n}</td><td>${x.s.st}</td><td>${x.s.f}</td><td>${x.names.join(' ')}</td></tr>`).join('')}</table></div>
+    <div class="ln-gh"><b>Üben, das hängen bleibt</b><span>${LN_TIPS.length} Gewohnheiten</span></div>
+    <div class="ln-tips">${LN_TIPS.map(([t, x], i) => `<div class="ln-tip"><i>${String(i + 1).padStart(2, '0')}</i><b>${t}</b><span>${x}</span></div>`).join('')}</div>`;
+}
+function lnHtml() {
+  const r = LN.root, cnt = lnCounts(), L = lnItems(), it = lnItem();
+  const tabs = `<div class="seg sm">${[['ch', 'Akkorde'], ['sc', 'Tonleitern'], ['info', 'Wissen']].map(([v, l]) => `<button class="${LN.tab === v ? 'on' : ''}" data-a="lnTab" data-v="${v}">${l}</button>`).join('')}</div>`;
+  const keys = `<div class="ln-keys">${LN_ROOT.map((n, i) => `<button class="ln-k ${i === r ? 'on' : ''}" data-a="lnRoot" data-r="${i}" aria-label="Tonart ${n[0]}, ${cnt[i] || 0} von ${LN_TOTAL} geschafft"><b>${n[0]}${n[0] !== n[1] ? `<small> ${n[1]}</small>` : ''}</b><u><s style="width:${Math.round(100 * (cnt[i] || 0) / LN_TOTAL)}%"></s></u></button>`).join('')}</div>`;
+  const head = `<div class="ch lv-head"><div class="lv-lbl">Lernen · ${cnt[r] || 0} von ${LN_TOTAL} in dieser Tonart</div>${tabs}</div>${keys}`;
+  if (!it) return head + lnInfoHtml();
+  const hit = LNS.flash === it.id, all = L.every(x => LN.done[x.id]), ck = x => LN.done[x.id] ? ' <em>✓</em>' : '';
+  const lbl = hit ? 'Treffer' : all ? 'Alles geschafft · zum Wiederholen' : LN.done[it.id] ? 'Schon geschafft · zum Wiederholen' : 'Jetzt spielen';
+  const btns = `<div class="row wrap mt"><button data-a="lnHear">${IC.play} Vorspielen</button><button data-a="lnNext">Überspringen</button>${cnt[r] ? `<button data-a="lnReset" style="margin-left:auto">Tonart zurücksetzen</button>` : ''}</div>`;
+  if (it.kind === 'ch') {
+    const task = `<div class="ln-task ${hit ? 'hit' : ''}"><div class="lv-lbl">${lbl}</div><div class="lv-key">${it.title} <em>${LN_INV[it.k]}</em></div>
+      <div class="lv-feel">${it.names.join(' – ')}, tiefster Ton ${it.names[0]}. Die hellen Tasten unten zeigen den Griff; triffst du ihn, geht es von selbst weiter.</div>${btns}</div>`;
+    return head + task + LN_CH.map(t => { const xs = L.filter(x => x.t === t);
+      return `<div class="ln-gh"><b>${xs[0].title}</b><span>${t.n} · ${t.st} · ${t.f} Halbtöne</span></div><div class="lv-invs ln-grid">${xs.map(x => `<button class="lv-iv ln-it ${x.id === it.id ? 'on' : ''} ${LN.done[x.id] ? 'done' : ''}" data-a="lnSel" data-id="${x.id}"><b>${LN_INV[x.k]}${ck(x)}</b>${lnMini(x)}<span>${x.names.join(' · ')}</span></button>`).join('')}</div>`; }).join('');
+  }
+  const task = `<div class="ln-task ${hit ? 'hit' : ''}"><div class="lv-lbl">${lbl}</div><div class="lv-key">${it.title}</div>
+    <div class="ln-seq">${it.names.map((n, i) => `<i class="${hit || i < LNS.si ? 'ok' : i === LNS.si ? 'nx' : ''}">${n}</i>`).join('')}</div>
+    <div class="lv-feel">Spiel die Töne nacheinander ${it.s.down ? 'abwärts' : 'aufwärts'}, die helle Taste ist die nächste.${LNS.miss ? ` <b>Daneben – weiter mit ${it.names[Math.min(LNS.si, it.names.length - 1)]}.</b>` : ''}${it.s.id === 'mel' ? ' Abwärts spielt man klassisch das natürliche Moll.' : ''}</div>${btns}</div>`;
+  return head + task + `<div class="lv-invs ln-grid" style="margin-top:22px">${L.map(x => `<button class="lv-iv ln-it ${x.id === it.id ? 'on' : ''} ${LN.done[x.id] ? 'done' : ''}" data-a="lnSel" data-id="${x.id}"><b>${x.s.n}${ck(x)}</b>${lnMini(x)}<span>${(x.s.down ? x.names.slice().reverse() : x.names).slice(0, -1).join(' · ')}</span><span>${x.s.st}</span><span>${x.s.f}</span></button>`).join('')}</div>`;
 }
 /* Das angedockte Klavier */
 function lvEl() {
@@ -3969,18 +4250,19 @@ function lvPaint() {
     lvBuild(true);
   }
   const held = new Set(notes), gh = new Set(LV.ghost), gb = new Set(LV.ghostB), f = LV.cur && LV.cur.c ? LV.cur.c : null;
-  const prac = LV.mode === 'prac' && !LV.ghostT ? chordPcs(lvPr().steps[LV.pr.i].c) : null;
+  const lnIt = LV.mode === 'learn' && !LV.ghostT ? lnItem() : null, lnNm = lnIt ? new Map(lnIt.notes.map((m, i) => [m, lnIt.names[i]])) : null;
+  const prac = LV.mode === 'prac' && !LV.ghostT ? chordPcs(lvPr().steps[LV.pr.i].c) : lnIt ? lnIt.notes.map(mod12) : null;
   let lab = '';
   for (const m in LV.pos) {
     const el = document.getElementById('lk' + m), n = +m, p = LV.pos[m];
-    const cls = 'k ' + (p.black ? 'b' : 'w') + (held.has(n) ? (LV.mode === 'prac' && LV.pr.flash ? ' hit' : prac && !prac.includes(mod12(n)) ? ' bad' : ' on') : gh.has(n) ? ' tgt' : gb.has(n) ? ' tgtb' : '');
+    const cls = 'k ' + (p.black ? 'b' : 'w') + (held.has(n) ? ((LV.mode === 'prac' && LV.pr.flash) || (LV.mode === 'learn' && LNS.flash) ? ' hit' : prac && !prac.includes(mod12(n)) ? ' bad' : ' on') : gh.has(n) ? ' tgt' : gb.has(n) ? ' tgtb' : '');
     if (el.getAttribute('class') !== cls) el.setAttribute('class', cls);
     const small = p.w < 20, lc = document.getElementById('lc' + m);
     if (lc) lc.style.display = held.has(n) || gh.has(n) || gb.has(n) ? 'none' : '';
     if (held.has(n)) {
       const iv = f ? QUALS[f.q].iv.find(i => mod12(i) === mod12(n - f.r)) : null;
       lab += `<text class="ln" x="${p.x.toFixed(1)}" y="${p.y - (small || iv == null ? 4 : 18)}" font-size="${small ? 9 : p.black ? 11 : 15}">${lvName(n, f)}</text>` + (iv != null && !small ? `<text class="lr" x="${p.x.toFixed(1)}" y="${p.y - 3}" font-size="${p.black ? 9 : 11}">${LV_TONE[iv] || ''}</text>` : '');
-    } else if (gh.has(n) || gb.has(n)) lab += `<text class="lg" x="${p.x.toFixed(1)}" y="${p.y - 4}" font-size="${small ? 9 : p.black ? 11 : 14}">${lvName(n, LV.focus && LV.focus.c)}</text>`;
+    } else if (gh.has(n) || gb.has(n)) lab += `<text class="lg${p.black ? ' b' : ''}" x="${p.x.toFixed(1)}" y="${p.y - 4}" font-size="${small ? 9 : p.black ? 11 : 14}">${(lnNm && lnNm.get(n)) || lvName(n, LV.focus && LV.focus.c)}</text>`;
   }
   const g = document.getElementById('lvLab'); if (g && LV.html.lab !== lab) { LV.html.lab = lab; g.innerHTML = lab; }
   lvEl().classList.toggle('latched', LV.latch.size > 0);
@@ -3990,7 +4272,11 @@ function lvRefresh() {
   lvGhostSync(); lvPaint();
   if (S.ui.labTab !== 'play') return;
   const set = (id, html) => { const el = document.getElementById(id); if (el && LV.html[id] !== html) { LV.html[id] = html; el.innerHTML = html; } };
-  set('lvNow', lvNowHtml()); set('lvDeg', lvDegHtml()); set('lvInv', lvInvHtml()); if (LV.mode !== 'free') set('lvMode', lvModeHtml());
+  set('lvNow', lvNowHtml());
+  const shown = LV.cur && LV.cur.c ? LV.cur.c.r + ':' + LV.cur.c.q : '';
+  if (shown && shown !== LV.shown && MO.on) { const ln = document.querySelector('#lvNow .lv-line'); if (ln) ln.classList.add('draw'); }
+  LV.shown = shown;
+  set('lvDeg', lvDegHtml()); set('lvInv', lvInvHtml()); if (LV.mode !== 'free') set('lvMode', lvModeHtml());
 }
 /** Nach jedem Neuzeichnen der Seite */
 function lvSync() {
@@ -5419,7 +5705,7 @@ const A = {
     collSetTags(S.ui.sheet.id, tags); S.ui.sheet = null; render(); toast('Tags gespeichert');
   },
   collItemDel() { collRemove(S.ui.sheet.id); S.ui.sheet = null; render(); toast('Entfernt'); },
-  lvMode(el) { LV.mode = el.dataset.v; LV.pr.armed = true; clearTimeout(LV.ghostT); LV.ghostT = 0; lvKeyAuto(); render(); },
+  lvMode(el) { LV.mode = el.dataset.v; LV.pr.armed = true; LNS.si = 0; LNS.armed = true; LNS.miss = false; clearTimeout(LV.ghostT); LV.ghostT = 0; lvKeyAuto(); render(); },
   lvDeg(el) { lvTap(diatonicChord(LK(), +el.dataset.d, 3)); },
   lvInvTap(el) { const f = lvFocus(), v = LV.invs[+el.dataset.k]; if (f && v) { hearNotes(v, 'piano', 1.3); lvGhost(v, [], 2600); lvRefresh(); } },
   lvStep(el) { LV.pr.i = +el.dataset.i; LV.pr.armed = true; lvRefresh(); },
@@ -5435,6 +5721,12 @@ const A = {
     const k = LK(); pgSnap(); PG.key = { root:k.root, mode: MODES[k.mode].minor ? 'minor' : 'major' }; PG.chords = LV.rec.map(c => ({ id:uid(), r:c.r, q:c.q, b:null, beats:4 }));
     const U = pgU(); U.sel = null; U.tab = 'build'; S.ui.area = 'prog'; pgStore(); window.scrollTo(0, 0); render(); toast('Mitgeschriebene Folge liegt in Progressionen');
   },
+  lnTab(el) { LN.tab = el.dataset.v; lnPick(null); },
+  lnRoot(el) { LN.root = +el.dataset.r; lnPick(null); },
+  lnSel(el) { lnPick(el.dataset.id); lnHearIt(); },
+  lnHear() { lnHearIt(); },
+  lnNext() { const L = lnItems(), it = lnItem(); if (!it) return; lnPick(L[(L.indexOf(L.find(x => x.id === it.id)) + 1) % L.length].id); },
+  lnReset() { const pre = [`c${LN.root}.`, `s${LN.root}.`]; Object.keys(LN.done).forEach(k => { if (pre.some(x => k.startsWith(x))) delete LN.done[k]; }); lnPick(null); toast('Fortschritt in dieser Tonart zurückgesetzt'); },
   lvClear() { LV.latch.forEach(m => lvStop(m, 0.12)); LV.latch.clear(); lvChanged('off'); },
   midiHeartToggle(el) { const c = parseChord(el.dataset.sym); if (!c) return; const saved = collToggle(c); el.classList.toggle('on', saved); toast(saved ? 'Zur Sammlung hinzugefügt' : 'Aus der Sammlung entfernt'); },
   midiAddProg(el) { const c = parseChord(el.dataset.sym); if (!c) return; pgInsert([c]); pgStore(); if (S.ui.area === 'prog') { if (PL.on) livePlayUpdate(); render(); } toast(chordSym(c) + ' liegt in der Progression'); },
@@ -5813,7 +6105,7 @@ const A = {
   emoOpen() { const c = curChord(), k = CK(); ST().labKey = Object.assign({}, k); S.ui.emo = { sel: c ? emoDegree(c, k) : null, path: [] }; S.ui.area = 'lab'; S.ui.labTab = 'emo'; window.scrollTo(0, 0); render(); },
   /* Labor */
   labTab(el) { const v = el.dataset.v, L = S.ui.labLast || (S.ui.labLast = {}); S.ui.labTab = LAB_GROUPS[v] ? (LAB_GROUPS[v].includes(L[v]) ? L[v] : LAB_GROUPS[v][0]) : v; L[labGroup()] = S.ui.labTab; window.scrollTo(0, 0); render(); },
-  finderFret(el) { const f = S.ui.finder, s = +el.dataset.s, fr = +el.dataset.f; f.frets[s] = f.frets[s] === fr ? -1 : fr; const open = tuningOpen(ST().tuning, ST().capo); if (f.frets[s] >= 0) hearNotes([open[s] + fr], 'pluck', 0.6); render(); },
+  finderFret(el) { const f = S.ui.finder, s = +el.dataset.s, fr = +el.dataset.f; f.frets[s] = f.frets[s] === fr ? -1 : fr; const open = tuningOpen(ST().tuning, ST().capo); if (f.frets[s] >= 0) { hearNotes([open[s] + fr], 'pluck', 0.6); pluckString(s, 0.03); } render(); },
   finderKey(el) { const f = S.ui.finder, m = +el.dataset.m, i = f.keys.indexOf(m); if (i >= 0) f.keys.splice(i, 1); else { f.keys.push(m); hearNotes([m], 'ep', 0.6); } render(); },
   finderClear() { S.ui.finder.frets = [-1,-1,-1,-1,-1,-1]; S.ui.finder.keys = []; render(); },
   finderHear() {
@@ -5844,7 +6136,7 @@ function playVoicing(cc) {
   const st = ST(), c = cc || curChord(); if (!c) return;
   const vs = voicingsFor(c, st.tuning, st.capo), v = vs[S.ui.vi[chordKey(c) + st.tuning + st.capo] || 0]; if (!v) return;
   const open = tuningOpen(st.tuning, st.capo), o = audio(), t = o.ctx.currentTime + 0.03;
-  v.frets.forEach((f, i) => { if (f >= 0) playVoice(o, o.bus.preview, 'pluck', open[i] + f, t + i * 0.035, 1.5, 0.75); });
+  v.frets.forEach((f, i) => { if (f >= 0) { playVoice(o, o.bus.preview, 'pluck', open[i] + f, t + i * 0.035, 1.5, 0.75); pluckString(i, 0.03 + i * 0.035); } });
 }
 
 /* ---- change / input ---- */
@@ -5939,31 +6231,89 @@ function initDrag() {
 }
 
 /* ===== Halftone-Motiv: Punktfeld um einen weichen Lichtkern, mit Staubspur nach rechts oben ===== */
+/* ===== Hintergrund: Halftone-Matrix, die auf den Klang reagiert, und Funken ===== */
+const FX = { sparks:[], dots:[], cv:null, g:null, top:null, tg:null, t:0, n:0, w:0, h:0, dpr:1, bass:0, high:0, dirty:false };
+function spawnSparks(x, y, count = 10, burst = false) {
+  if (!MO.on || !FX.top || document.hidden || FX.sparks.length > 480) return;
+  for (let i = 0; i < count; i++) {
+    const ang = -Math.PI / 2 + (Math.random() - 0.5) * (burst ? Math.PI * 1.8 : 1.1);
+    const spd = (burst ? 2.5 : 1.5) + Math.random() * 5.5;
+    FX.sparks.push({ x, y, vx: Math.cos(ang) * spd + (Math.random() - 0.5) * 1.5, vy: Math.sin(ang) * spd - Math.random() * 2, life: 1, decay: 0.018 + Math.random() * 0.025, size: Math.random() < 0.65 ? 2 : 3.5, col: Math.random() < 0.7 ? '#e94e1b' : '#f5eddc' });
+  }
+}
+function fxSize() {
+  const W = window.innerWidth, H = window.innerHeight, dpr = Math.min(2, window.devicePixelRatio || 1);
+  if (W === FX.w && H === FX.h && dpr === FX.dpr) return;
+  FX.w = W; FX.h = H; FX.dpr = dpr;
+  [FX.cv, FX.top].forEach(c => { c.width = Math.round(W * dpr); c.height = Math.round(H * dpr); });
+}
+function fxDraw() {
+  fxSize();
+  const W = FX.w, H = FX.h, dpr = FX.dpr, g = FX.g, px1 = v => Math.round(v * dpr) / dpr;
+  let bass = 0, high = 0;
+  const o = AU.o;
+  if (o && o.analyser && AU.ctx && AU.ctx.state === 'running') {
+    o.analyser.getByteFrequencyData(o.freqData);
+    for (let i = 0; i < 6; i++) bass += o.freqData[i];
+    for (let i = 16; i < 40; i++) high += o.freqData[i];
+    bass /= 6 * 255; high /= 24 * 255;
+  }
+  FX.bass = bass; FX.high = high;
+  FX.t += 0.015 + bass * 0.04;
+  const t = FX.t, cx = W * 0.76, cy = H * 0.16, scale = (W < 700 ? 0.65 : 1) * (1 + bass * 0.24);
+  g.setTransform(dpr, 0, 0, dpr, 0, 0); g.clearRect(0, 0, W, H);
+  // Lichtkern
+  const rad = (170 + bass * 90) * scale, og = g.createRadialGradient(cx, cy, 0, cx, cy, rad);
+  og.addColorStop(0, `rgba(245,237,220,${0.22 + bass * 0.35})`); og.addColorStop(0.5, `rgba(233,78,27,${0.06 + bass * 0.18})`); og.addColorStop(1, 'rgba(0,0,0,0)');
+  g.globalAlpha = 1; g.fillStyle = og; g.beginPath(); g.arc(cx, cy, rad, 0, Math.PI * 2); g.fill();
+  // Punktmatrix: dehnt sich mit dem Bass, dreht langsam, Höhen lassen einzelne Punkte aufblitzen
+  const cos = Math.cos(t * 0.15), sin = Math.sin(t * 0.15), hot = high > 0.28, dots = FX.dots, min = 1 / dpr;
+  for (let i = 0; i < dots.length; i++) {
+    const p = dots[i], x = cx + (p.dx * cos - p.dy * sin) * scale, y = cy + (p.dx * sin + p.dy * cos) * scale;
+    if (x < -10 || x > W + 10 || y < -10 || y > H + 10) continue;
+    const sz = Math.max(min, px1(p.r * (1 + bass * 0.8 * Math.sin(p.d * 0.03 - t * 4))));
+    g.fillStyle = hot && i % 17 === 0 ? '#e94e1b' : '#ffffff';
+    g.globalAlpha = Math.min(0.95, p.op * (0.42 + bass * 0.65));
+    g.fillRect(px1(x), px1(y), sz, sz);
+  }
+  g.globalAlpha = 1;
+  // Funken liegen auf einer eigenen Ebene über den Karten, sonst wären sie verdeckt
+  const tg = FX.tg;
+  if (FX.sparks.length || FX.dirty) {
+    tg.setTransform(dpr, 0, 0, dpr, 0, 0); tg.clearRect(0, 0, W, H); FX.dirty = FX.sparks.length > 0;
+    for (let i = FX.sparks.length - 1; i >= 0; i--) {
+      const s = FX.sparks[i];
+      s.x += s.vx; s.y += s.vy; s.vy += 0.06; s.life -= s.decay;
+      if (s.life <= 0 || s.y > H + 20) { FX.sparks.splice(i, 1); continue; }
+      tg.fillStyle = s.col; tg.globalAlpha = s.life; tg.fillRect(px1(s.x), px1(s.y), s.size, s.size);
+    }
+    tg.globalAlpha = 1;
+  }
+}
 function haloInit() {
   try {
-    const W = 1080, H = 760, sc = Math.min(2, window.devicePixelRatio || 1), cv = document.createElement('canvas'); cv.width = W * sc; cv.height = H * sc;
-    const g = cv.getContext('2d'); g.scale(sc, sc);
+    const mk = id => { const c = document.createElement('canvas'); c.id = id; c.setAttribute('aria-hidden', 'true'); return c; };
+    FX.cv = mk('fxCanvas'); FX.top = mk('fxTop'); document.body.prepend(FX.cv); document.body.appendChild(FX.top);
+    FX.g = FX.cv.getContext('2d'); FX.tg = FX.top.getContext('2d');
     let seed = 5; const rnd = () => { seed = (seed * 1664525 + 1013904223) >>> 0; return seed / 4294967296; };
     const noise = a => 0.5 + 0.5 * (Math.sin(a * 1.7) * 0.6 + Math.sin(a * 4.3 + 1.2) * 0.25 + Math.sin(a * 9.1 + 2.8) * 0.15);
-    const cx = 540, cy = 358; g.fillStyle = '#fff';
-    for (let y = 4; y < H; y += 9) for (let x = 4; x < W; x += 9) {
-      const dx = x - cx, dy = y - cy, d = Math.hypot(dx, dy), a = Math.atan2(dy, dx);
-      const blob = 200 + noise(a + 0.3) * 110, inner = 120 + noise(a + 1.7) * 35, open = Math.max(0, Math.cos(a - Math.PI * 0.75));
+    for (let y = 0; y < 760; y += 11) for (let x = 0; x < 1080; x += 11) {
+      const dx = x - 540, dy = y - 358, d = Math.hypot(dx, dy), a = Math.atan2(dy, dx);
+      const blob = 210 + noise(a + 0.3) * 110, inner = 115 + noise(a + 1.7) * 35, open = Math.max(0, Math.cos(a - Math.PI * 0.75));
       let dens = 0;
       if (d >= inner && d < blob) dens = Math.sin((d - inner) / (blob - inner) * Math.PI) * 0.95 * (1 - 0.55 * open);
       else if (d >= blob) dens = 0.32 * Math.exp(-(d - blob) / (60 + 220 * open)) * (0.5 + 0.5 * open);
-      if (rnd() > dens) continue;
-      const op = Math.min(1, dens * 0.9 + rnd() * 0.25);
-      g.globalAlpha = op; g.beginPath(); g.arc(x, y, Math.max(0.5, op * 2.5), 0, 6.3); g.fill();
+      if (rnd() <= dens) FX.dots.push({ dx, dy, d, op: Math.min(1, dens * 0.9 + rnd() * 0.25), r: Math.max(0.7, dens * 2.4) });
     }
-    for (let i = 0; i < 1300; i++) {
-      const a = Math.PI * 0.75 + (rnd() - 0.5) * (rnd() < 0.75 ? 1.2 : 6.2), d = 150 + Math.pow(rnd(), 0.8) * 620;
-      g.globalAlpha = 0.3 + rnd() * 0.6; g.beginPath(); g.arc(cx + Math.cos(a) * d, cy + Math.sin(a) * d, 0.4 + rnd() * 1.2, 0, 6.3); g.fill();
-    }
-    g.globalAlpha = 1;
-    const og = g.createRadialGradient(cx, cy, 0, cx, cy, 185); og.addColorStop(0, 'rgba(255,255,255,.8)'); og.addColorStop(0.55, 'rgba(255,255,255,.45)'); og.addColorStop(1, 'rgba(255,255,255,0)');
-    g.fillStyle = og; g.beginPath(); g.ellipse(cx, cy, 190, 180, 0, 0, 6.3); g.fill();
-    cv.toBlob(b => { if (b) document.documentElement.style.setProperty('--halo', `url(${URL.createObjectURL(b)})`); });
+    if (!MO.on) { fxDraw(); addEventListener('resize', fxDraw); return; }   // weniger Bewegung gewünscht: ein ruhiges Standbild
+    const loop = () => {
+      requestAnimationFrame(loop);
+      // 60 Bilder pro Sekunde, solange etwas klingt oder fliegt; im Leerlauf reicht die Hälfte
+      const busy = FX.sparks.length || FX.dirty || PL.on || LV.voices.size || FX.bass > 0.004 || FX.high > 0.004;
+      if (!busy && (++FX.n & 1)) return;
+      fxDraw();
+    };
+    requestAnimationFrame(loop);
   } catch (e) {}
 }
 
@@ -6038,6 +6388,14 @@ function dndDrop() {
   if (key) { if (src.dataset.flip === key) src.removeAttribute('data-flip'); g.dataset.flip = key; hap(10); }   // der Akkord gleitet von der Loslass-Stelle an seinen Platz
   if (pay.scope === 'pg') pgDone(); else commit();
   dndEnd(true);
+  if (key) snapFlash(key);
+}
+function snapFlash(key) {
+  if (!MO.on) return;
+  requestAnimationFrame(() => {
+    const el = document.querySelector(`#view [data-flip="${key}"]`); if (!el) return;
+    el.classList.add('snap'); setTimeout(() => el.classList.remove('snap'), 460);
+  });
 }
 /** Schublade offen: den Teil, in den es geht, über die Schublade schieben */
 function dockReveal(id) {
